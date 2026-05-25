@@ -968,8 +968,9 @@ const localeExamples = examples[lang];
 			color: #1e293b;
 			display: flex;
 			flex-direction: column;
-			padding: 0;
+			padding: 0 0 100px 0; /* Add bottom safety padding */
 			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+			overflow: hidden;
 		}
 		.share-card.summary-mode {
 			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -1081,14 +1082,15 @@ const localeExamples = examples[lang];
 		}
 		.share-card .card-footer {
 			text-align: center;
-			padding-bottom: 180px; /* More padding to avoid cutoff */
+			padding-bottom: 100px;
 			width: 100%;
 			border-top: 4px solid #f1f5f9;
 			padding-top: 60px;
+			margin-top: auto;
 		}
 		.summary-mode .card-footer {
 			border-top: none;
-			padding-bottom: 200px;
+			padding-bottom: 150px;
 		}
 
 		.share-card .footer-note {
