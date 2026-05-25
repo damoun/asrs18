@@ -1,11 +1,14 @@
 ---
+import { ui, type Language } from '../data/i18n';
+
 interface Props {
 	title: string;
 	description?: string;
-	lang: string;
+	lang: Language;
 }
 
 const { title, description, lang } = Astro.props;
+const t = ui[lang];
 
 const languages = [
 	{ code: 'en', label: 'English' },
@@ -90,7 +93,7 @@ const languages = [
 					</li>
 					<li>
 						<button id="font-toggle" class="outline secondary" size="small">
-							Dyslexic Font
+							Dyslexic
 						</button>
 					</li>
 				</ul>
@@ -105,7 +108,7 @@ const languages = [
 			<hr />
 			<p>
 				<small>
-					ASRS-18 is a self-report screening tool. It is not a diagnostic tool.
+					{t['results.disclaimer']}
 				</small>
 			</p>
 		</footer>
