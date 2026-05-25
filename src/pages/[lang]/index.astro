@@ -231,11 +231,21 @@ const localeExamples = examples[lang];
 				// Update Progress
 				updateProgress();
 
-				// Focus Mode: Highlight next question
+				// Focus Mode: Highlight next question or scroll to submit
 				const currentQ = target.closest('.question-container');
-				const nextQ = currentQ.nextElementSibling;
-				if (nextQ && nextQ.classList.contains('question-container')) {
-					highlightQuestion(nextQ);
+				const currentIndex = parseInt(currentQ.dataset.index);
+				
+				if (currentIndex === 5) {
+					// End of Part A: Scroll to submit button
+					const submitBtn = document.getElementById('submit-btn');
+					if (submitBtn) {
+						submitBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					}
+				} else {
+					const nextQ = currentQ.nextElementSibling;
+					if (nextQ && nextQ.classList.contains('question-container')) {
+						highlightQuestion(nextQ);
+					}
 				}
 			}
 		});
