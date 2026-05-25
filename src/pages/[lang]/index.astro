@@ -331,9 +331,14 @@ const localeQuestions = questions[lang];
 			font-weight: 800;
 			text-transform: uppercase;
 			letter-spacing: 0.1rem;
-			list-style: none;
 			cursor: pointer;
 			transition: all 0.2s ease;
+			list-style: none;
+		}
+		.part-b-toggle::-webkit-details-marker,
+		.part-b-toggle::marker {
+			display: none;
+			content: "";
 		}
 		.part-b-toggle:hover {
 			border-color: var(--pico-primary);
@@ -348,9 +353,6 @@ const localeQuestions = questions[lang];
 		}
 		#part-b-details[open] .part-b-toggle .chevron {
 			transform: rotate(180deg);
-		}
-		.part-b-toggle::-webkit-details-marker {
-			display: none;
 		}
 		.part-b-intro {
 			padding: 1.5rem;
