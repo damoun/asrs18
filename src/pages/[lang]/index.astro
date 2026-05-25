@@ -58,16 +58,16 @@ const localeQuestions = questions[lang];
 				</div>
 			))}
 
+			<div class="part-b-intro">
+				<p>{t['assessment.partB.description']}</p>
+			</div>
+
 			{/* Part B: Optional Frequency Details */}
 			<details id="part-b-details">
 				<summary class="part-b-toggle">
 					<span>{t['assessment.partB']}</span>
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
 				</summary>
-				
-				<div class="part-b-intro">
-					<p>{t['assessment.partB.description']}</p>
-				</div>
 				
 				{localeQuestions.slice(6).map((question, index) => {
 					const actualIndex = index + 6;
@@ -118,11 +118,11 @@ const localeQuestions = questions[lang];
 			<div id="result-content">
 				<h4 id="result-level"></h4>
 				<div class="result-scores">
-					<div class="score-card">
+					<div class="score-card" id="card-part-a">
 						<h5>{t['results.partA.title']}</h5>
 						<p id="result-score-info-A"></p>
 					</div>
-					<div class="score-card">
+					<div class="score-card" id="card-part-b">
 						<h5>{t['results.partB.title']}</h5>
 						<p id="result-score-info-B"></p>
 					</div>
@@ -150,6 +150,8 @@ const localeQuestions = questions[lang];
 		const resultScoreInfoA = document.getElementById('result-score-info-A');
 		const resultScoreInfoB = document.getElementById('result-score-info-B');
 		const resultInterpretation = document.getElementById('result-interpretation');
+		const cardPartB = document.getElementById('card-part-b');
+		const resultScores = document.querySelector('.result-scores');
 
 		// ASRS v1.1 Shaded Boxes Logic
 		// Part A: Q1-Q3 (Sometimes, Often, Very Often), Q4-Q6 (Often, Very Often)
@@ -161,28 +163,41 @@ const localeQuestions = questions[lang];
 			2, 2, 2, 3, 3, 3, // Part A (0-5)
 			2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 3, 3 // Part B (6-17)
 		];
-
 		form?.addEventListener('submit', (e) => {
 			e.preventDefault();
 			const formData = new FormData(form);
 			let partAScore = 0;
 			let partBScore = 0;
+			let partBAnswered = false;
 
 			for (let i = 0; i < 18; i++) {
-				const value = parseInt(formData.get(`q${i}`));
-				if (value >= shadedThresholds[i]) {
-					if (i < 6) {
-						partAScore++;
-					} else {
-						partBScore++;
+				const value = formData.get(`q${i}`);
+				if (value !== null) {
+					const numericValue = parseInt(value.toString());
+					if (numericValue >= shadedThresholds[i]) {
+						if (i < 6) {
+							partAScore++;
+						} else {
+							partBScore++;
+						}
 					}
+					if (i >= 6) partBAnswered = true;
 				}
 			}
 
 			// Prepare Results
 			resultTitle.textContent = t['results.title'];
-			resultScoreInfoA.textContent = t['results.score_info'].replace('{score}', partAScore);
-			resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore);
+			resultScoreInfoA.textContent = t['results.score_info'].replace('{score}', partAScore.toString());
+
+			if (partBAnswered) {
+				resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore.toString());
+				cardPartB.style.display = 'block';
+				resultScores.style.gridTemplateColumns = '1fr 1fr';
+			} else {
+				cardPartB.style.display = 'none';
+				resultScores.style.gridTemplateColumns = '1fr';
+			}
+
 
 			if (partAScore >= 4) {
 				resultLevel.textContent = t['results.level.high'];
