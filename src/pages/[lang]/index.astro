@@ -208,11 +208,10 @@ const localeExamples = examples[lang];
 						</div>
 					</div>
 				</div>
-
-				<div class="card-disclaimer">{t['results.disclaimer']}</div>
 			</div>
 			
 			<div class="card-footer">
+				<div class="card-disclaimer">{t['results.disclaimer']}</div>
 				<div class="footer-note">{t['report.check_at']}</div>
 				<div class="footer-domain">asrs18.com</div>
 			</div>
@@ -248,7 +247,6 @@ const localeExamples = examples[lang];
 		const form = document.getElementById('asrs-form');
 		const modal = document.getElementById('result-modal');
 		const closeModal = document.getElementById('close-modal');
-		
 		const resultTitle = document.getElementById('result-title');
 		const resultLevel = document.getElementById('result-level');
 		const resultScoreInfoA = document.getElementById('result-score-info-A');
@@ -265,66 +263,42 @@ const localeExamples = examples[lang];
 		const partBDetails = document.getElementById('part-b-details');
 		const shareBtn = document.getElementById('share-button');
 		const shareDetailedBtn = document.getElementById('share-detailed-button');
-		
-		// Share card elements
 		const shareResultLevel = document.getElementById('share-result-level');
 		const shareScoreA = document.getElementById('share-score-A');
 		const shareScoreB = document.getElementById('share-score-B');
 		const shareScoreItemB = document.getElementById('share-score-item-B');
 		const cardPartB = document.getElementById('card-part-b');
 
-		// Clear Progress
 		clearBtn?.addEventListener('click', () => {
 			if (confirm(t['assessment.clear_confirm'])) {
-				for (let i = 0; i < 18; i++) {
-					localStorage.removeItem(`asrs-q${i}`);
-				}
+				for (let i = 0; i < 18; i++) { localStorage.removeItem(`asrs-q${i}`); }
 				window.location.reload();
 			}
 		});
 
-		// Auto-focus Part B on expand
 		partBDetails?.addEventListener('toggle', () => {
-			if (partBDetails.open && questions.length > 6) {
-				highlightQuestion(questions[6]);
-			}
+			if (partBDetails.open && questions.length > 6) { highlightQuestion(questions[6]); }
 		});
 
-		// Handle dynamic help text and accessibility features
 		form?.addEventListener('change', (e) => {
 			const target = e.target;
 			if (target.classList.contains('option-input')) {
 				const name = target.name;
-				const description = target.dataset.description;
 				const helpContainer = document.getElementById(`help-${name}`);
-				
-				// Update Help Text
 				if (helpContainer) {
-					helpContainer.textContent = description;
+					helpContainer.textContent = target.dataset.description;
 					helpContainer.classList.add('visible');
 				}
-
-				// Auto-save to LocalStorage
-				const value = target.value;
-				localStorage.setItem(`asrs-${name}`, value);
-
-				// Update Progress
+				localStorage.setItem(`asrs-${name}`, target.value);
 				updateProgress();
-
-				// Focus Mode: Highlight next question or scroll to submit
 				const currentQ = target.closest('.question-container');
 				const currentIndex = parseInt(currentQ.dataset.index);
-				
 				if (currentIndex === 5) {
 					const completionZone = document.getElementById('completion-zone');
-					if (completionZone) {
-						completionZone.scrollIntoView({ behavior: 'smooth', block: 'start' });
-					}
+					if (completionZone) completionZone.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				} else {
 					const nextQ = currentQ.nextElementSibling;
-					if (nextQ && nextQ.classList.contains('question-container')) {
-						highlightQuestion(nextQ);
-					}
+					if (nextQ && nextQ.classList.contains('question-container')) highlightQuestion(nextQ);
 				}
 			}
 		});
@@ -334,36 +308,26 @@ const localeExamples = examples[lang];
 			const keys = Array.from(formData.keys()).filter(key => key.startsWith('q'));
 			const answeredA = keys.filter(k => parseInt(k.substring(1)) < 6).length;
 			const answeredB = keys.filter(k => parseInt(k.substring(1)) >= 6).length;
-
 			progressBarA.value = answeredA;
 			progressTextA.textContent = `${answeredA}/6`;
-
 			if (answeredB > 0) {
 				progressContainerB.style.display = 'block';
 				progressBarB.value = answeredB;
 				progressTextB.textContent = `${answeredB}/12`;
-			} else {
-				progressContainerB.style.display = 'none';
-			}
+			} else { progressContainerB.style.display = 'none'; }
 		}
 
 		function highlightQuestion(el, shouldScroll = true) {
 			questions.forEach(q => q.classList.remove('active'));
 			el.classList.add('active');
-			
 			if (shouldScroll) {
 				const rect = el.getBoundingClientRect();
-				const threshold = 160;
-				if (rect.top < threshold || rect.bottom > window.innerHeight) {
-					el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-				}
+				if (rect.top < 160 || rect.bottom > window.innerHeight) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
 		}
 
-		// Initial Highlight (no scroll on first load)
 		if (questions.length > 0) highlightQuestion(questions[0], false);
 
-		// Load Saved State
 		function loadSavedState() {
 			let lastAnsweredIndex = -1;
 			for (let i = 0; i < 18; i++) {
@@ -373,22 +337,15 @@ const localeExamples = examples[lang];
 					if (radio) {
 						radio.checked = true;
 						const helpContainer = document.getElementById(`help-q${i}`);
-						if (helpContainer) {
-							helpContainer.textContent = radio.dataset.description;
-							helpContainer.classList.add('visible');
-						}
+						if (helpContainer) { helpContainer.textContent = radio.dataset.description; helpContainer.classList.add('visible'); }
 						lastAnsweredIndex = i;
 					}
 				}
 			}
 			updateProgress();
-			if (lastAnsweredIndex !== -1 && lastAnsweredIndex < 17) {
-				highlightQuestion(questions[lastAnsweredIndex + 1], true);
-			} else if (lastAnsweredIndex === 17) {
-				highlightQuestion(questions[17], true);
-			}
+			if (lastAnsweredIndex !== -1 && lastAnsweredIndex < 17) highlightQuestion(questions[lastAnsweredIndex + 1], true);
+			else if (lastAnsweredIndex === 17) highlightQuestion(questions[17], true);
 		}
-
 		loadSavedState();
 
 		const shadedThresholds = [2, 2, 2, 3, 3, 3, 2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 3, 3];
@@ -399,7 +356,6 @@ const localeExamples = examples[lang];
 			let partAScore = 0;
 			let partBScore = 0;
 			let partBAnswered = false;
-
 			for (let i = 0; i < 18; i++) {
 				const value = formData.get(`q${i}`);
 				if (value !== null) {
@@ -411,11 +367,8 @@ const localeExamples = examples[lang];
 					if (i >= 6) partBAnswered = true;
 				}
 			}
-
-			// Update Web Modal
 			resultTitle.textContent = t['results.title'];
 			resultScoreInfoA.textContent = t['results.score_info'].replace('{score}', partAScore.toString());
-			
 			if (partBAnswered) {
 				resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore.toString());
 				cardPartB.style.display = 'block';
@@ -427,15 +380,12 @@ const localeExamples = examples[lang];
 				resultScores.style.display = 'block';
 				shareScoreItemB.style.display = 'none';
 			}
-
 			const levelText = partAScore >= 4 ? t['results.level.high'] : t['results.level.low'];
 			resultLevel.textContent = levelText;
 			shareResultLevel.textContent = levelText;
 			resultInterpretation.textContent = partAScore >= 4 ? t['results.interpretation.high'] : t['results.interpretation.low'];
 			resultLevel.style.color = partAScore >= 4 ? 'var(--pico-primary)' : 'inherit';
-			
 			shareScoreA.textContent = `${partAScore}/6`;
-
 			modal.showModal();
 		});
 
@@ -443,7 +393,6 @@ const localeExamples = examples[lang];
 			const originalText = shareBtn.textContent;
 			shareBtn.textContent = '...';
 			shareBtn.disabled = true;
-
 			try {
 				const card = document.getElementById('share-card');
 				const canvas = await html2canvas(card, {
@@ -455,47 +404,37 @@ const localeExamples = examples[lang];
 					windowWidth: 1080,
 					windowHeight: 1920,
 				});
-
 				const image = canvas.toDataURL('image/png');
 				const link = document.createElement('a');
 				link.download = `asrs18-summary-${lang}.png`;
 				link.href = image;
 				link.click();
-			} catch (err) {
-				console.error('Error generating image:', err);
-			} finally {
-				shareBtn.textContent = originalText;
-				shareBtn.disabled = false;
-			}
+			} catch (err) { console.error('Error generating image:', err); }
+			finally { shareBtn.textContent = originalText; shareBtn.disabled = false; }
 		});
 
 		shareDetailedBtn?.addEventListener('click', async () => {
 			const originalText = shareDetailedBtn.textContent;
 			shareDetailedBtn.textContent = '...';
 			shareDetailedBtn.disabled = true;
-
 			try {
 				const { jsPDF } = window.jspdf;
 				const doc = new jsPDF();
 				const margin = 20;
 				let y = margin;
-
 				doc.setFontSize(22);
 				doc.setTextColor(59, 130, 246);
 				doc.text('ASRS-18 Clinical Report', margin, y);
 				y += 10;
-				
 				doc.setFontSize(12);
 				doc.setTextColor(100, 116, 139);
 				doc.text('Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist', margin, y);
 				y += 15;
-
 				const formData = new FormData(form);
 				let partAScore = 0;
 				let partBScore = 0;
 				const tableData = [];
 				const optionLabels = [t['options.never'], t['options.rarely'], t['options.sometimes'], t['options.often'], t['options.veryOften']];
-
 				for (let i = 0; i < 18; i++) {
 					const value = formData.get(`q${i}`);
 					const responseLabel = value !== null ? optionLabels[parseInt(value.toString())] : '-';
@@ -508,28 +447,22 @@ const localeExamples = examples[lang];
 					}
 					tableData.push([i + 1, localeQuestions[i], responseLabel]);
 				}
-
 				doc.setDrawColor(59, 130, 246);
 				doc.setFillColor(248, 250, 252);
 				doc.rect(margin, y, 170, 40, 'FD');
-				
 				doc.setFontSize(14);
 				doc.setTextColor(30, 41, 59);
 				doc.setFont(undefined, 'bold');
 				doc.text(t['results.title'], margin + 10, y + 15);
-				
 				doc.setFontSize(11);
 				doc.setFont(undefined, 'normal');
 				doc.text(t['results.score_info'].replace('{score}', partAScore.toString()), margin + 10, y + 25);
 				doc.text(t['results.score_info_partB'].replace('{score}', partBScore.toString()), margin + 10, y + 32);
-				
 				const levelText = partAScore >= 4 ? t['results.level.high'] : t['results.level.low'];
 				doc.setTextColor(partAScore >= 4 ? 37 : 30, partAScore >= 4 ? 99 : 41, partAScore >= 4 ? 235 : 59);
 				doc.setFont(undefined, 'bold');
 				doc.text(levelText, 180, y + 25, { align: 'right' });
-				
 				y += 55;
-
 				doc.autoTable({
 					startY: y,
 					head: [[ '#', t['report.question'], t['report.response'] ]],
@@ -538,25 +471,17 @@ const localeExamples = examples[lang];
 					columnStyles: { 0: { cellWidth: 10 }, 2: { cellWidth: 40, fontStyle: 'bold' } },
 					margin: { left: margin, right: margin }
 				});
-
 				const finalY = doc.lastAutoTable.finalY + 20;
 				doc.setFontSize(10);
 				doc.setTextColor(148, 163, 184);
 				doc.setFont(undefined, 'italic');
 				doc.text(t['results.disclaimer'], margin, finalY, { maxWidth: 170 });
-				
 				doc.setFont(undefined, 'normal');
 				doc.text(`${t['report.check_at']} asrs18.com`, 105, 285, { align: 'center' });
-
 				doc.save(`asrs18-report-${lang}.pdf`);
-			} catch (err) {
-				console.error('Error generating PDF:', err);
-			} finally {
-				shareDetailedBtn.textContent = originalText;
-				shareDetailedBtn.disabled = false;
-			}
+			} catch (err) { console.error('Error generating PDF:', err); }
+			finally { shareDetailedBtn.textContent = originalText; shareDetailedBtn.disabled = false; }
 		});
-
 		closeModal?.addEventListener('click', () => { modal.close(); });
 		modal?.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
 	</script>
@@ -613,28 +538,149 @@ const localeExamples = examples[lang];
 
 		/* Shareable Card Styles */
 		.share-card, .share-card * { box-sizing: border-box; margin: 0; padding: 0; border: none; list-style: none; }
-		.share-card { width: 1080px; height: 1920px; background: #ffffff; color: #1e293b; display: flex; flex-direction: column; padding: 100px; font-family: 'Inter', system-ui, -apple-system, sans-serif; position: relative; overflow: hidden; }
-		.share-card.summary-mode { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white !important; }
-		.share-card .card-header { text-align: center; margin-bottom: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-		.share-card .card-tag { background: #3b82f6; padding: 12px 40px; border-radius: 50px; font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; color: white; }
-		.share-card .card-title { font-size: 150px; margin-top: 30px; margin-bottom: 5px; color: inherit; line-height: 1; font-weight: 900; text-align: center; width: 100%; }
-		.share-card .card-subtitle { font-size: 48px; opacity: 0.7; text-align: center; }
-		.share-card .card-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; gap: 50px; }
-		.share-card .result-box { background: #f8fafc; border: 10px solid #3b82f6; border-radius: 50px; padding: 70px 60px; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 !important; }
-		.summary-mode .result-box { background: rgba(255, 255, 255, 0.1); border-color: #60a5fa; }
-		.share-card .result-level-text { font-size: 80px; color: #2563eb; margin-bottom: 50px; line-height: 1.1; font-weight: 900; text-align: center; }
-		.summary-mode .result-level-text { color: #ffffff; }
-		.share-card .card-scores { display: flex; flex-direction: column; gap: 30px; width: 100%; }
-		.share-card .card-score-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0, 0, 0, 0.1); padding-bottom: 15px; }
-		.summary-mode .card-score-item { border-bottom: 2px solid rgba(255, 255, 255, 0.2); }
-		.share-card .label { font-size: 38px; font-weight: 600; opacity: 0.8; }
-		.share-card .value { font-size: 56px; font-weight: 900; color: #2563eb; }
-		.summary-mode .value { color: #60a5fa; }
-		.share-card .card-disclaimer { margin-top: 20px; font-size: 28px; opacity: 0.6; text-align: center; font-style: italic; line-height: 1.4; }
-		.share-card .card-footer { margin-top: auto; text-align: center; width: 100%; padding-top: 50px; border-top: 3px solid rgba(59, 130, 246, 0.2); }
-		.summary-mode .card-footer { border-top: none; }
-		.share-card .footer-note { font-size: 32px; opacity: 0.6; margin-bottom: 10px; }
-		.share-card .footer-domain { font-size: 64px; color: #3b82f6; font-weight: 900; }
+		.share-card {
+			width: 1080px;
+			height: 1920px;
+			background: #ffffff;
+			color: #1e293b;
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+			display: flex;
+			flex-direction: column;
+			padding: 100px;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+		.share-card.summary-mode {
+			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+			color: white !important;
+		}
+		.share-card .card-header {
+			text-align: center;
+			margin-bottom: 40px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		.share-card .card-tag {
+			background: #3b82f6;
+			padding: 15px 50px;
+			border-radius: 50px;
+			font-size: 32px;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 6px;
+			color: white;
+		}
+		.share-card .card-title {
+			font-size: 160px;
+			margin-top: 40px;
+			margin-bottom: 10px;
+			color: inherit;
+			line-height: 1;
+			font-weight: 900;
+		}
+		.share-card .card-subtitle {
+			font-size: 56px;
+			opacity: 0.8;
+		}
+		.share-card .card-body {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			gap: 40px;
+		}
+		.share-card .result-box {
+			background: #f8fafc;
+			border: 12px solid #3b82f6;
+			border-radius: 60px;
+			padding: 60px 80px;
+			text-align: center;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		.summary-mode .result-box {
+			background: rgba(255, 255, 255, 0.1);
+			border-color: #60a5fa;
+		}
+		.share-card .result-level-text {
+			font-size: 96px;
+			color: #2563eb;
+			margin-bottom: 80px;
+			line-height: 1.1;
+			font-weight: 900;
+			text-align: center;
+		}
+		.summary-mode .result-level-text {
+			color: #ffffff;
+			text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+		}
+		.share-card .card-scores {
+			display: flex;
+			flex-direction: column;
+			gap: 40px;
+			width: 100%;
+		}
+		.share-card .card-score-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+			padding-bottom: 20px;
+		}
+		.summary-mode .card-score-item {
+			border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+		}
+		.share-card .label {
+			font-size: 44px;
+			font-weight: 700;
+			opacity: 0.9;
+		}
+		.share-card .value {
+			font-size: 64px;
+			font-weight: 900;
+			color: #2563eb;
+		}
+		.summary-mode .value {
+			color: #60a5fa;
+		}
+		.share-card .card-footer {
+			margin-top: auto;
+			text-align: center;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 15px;
+			padding-top: 40px;
+		}
+		.share-card .card-disclaimer {
+			font-size: 28px;
+			opacity: 0.6;
+			text-align: center;
+			font-style: italic;
+			line-height: 1.5;
+			color: inherit;
+			max-width: 900px;
+			margin-bottom: 20px;
+		}
+		.share-card .footer-note {
+			font-size: 36px;
+			opacity: 0.7;
+			color: inherit;
+		}
+		.share-card .footer-domain {
+			font-size: 84px;
+			color: #3b82f6;
+			font-weight: 900;
+		}
+
 		.practitioner-note { display: flex; gap: 0.75rem; align-items: flex-start; padding: 1rem; background: var(--pico-ins-color); color: var(--pico-primary-inverse); border-radius: var(--pico-border-radius); margin-bottom: 0; }
 		.practitioner-note svg { flex-shrink: 0; margin-top: 0.1rem; }
 		.practitioner-note small { line-height: 1.4; font-weight: 500; }
