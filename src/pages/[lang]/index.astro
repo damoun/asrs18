@@ -183,6 +183,42 @@ const localeExamples = examples[lang];
 		</article>
 	</dialog>
 
+	{/* Shareable Card Template (Hidden) */}
+	<div id="share-card-wrapper" style="position: absolute; left: -9999px; top: 0;">
+		<div id="share-card" class="share-card">
+			<div class="card-header">
+				<span class="card-tag">ASRS-v1.1</span>
+				<h1>ASRS-18</h1>
+				<p>ADHD Self-Report</p>
+			</div>
+			
+			<div class="card-body">
+				<div class="result-box">
+					<h2 id="card-result-level"></h2>
+					<div class="card-scores">
+						<div class="card-score-item">
+							<span class="label">{t['results.partA.title']}</span>
+							<span class="value" id="card-score-A"></span>
+						</div>
+						<div class="card-score-item" id="card-score-item-B">
+							<span class="label">{t['results.partB.title']}</span>
+							<span class="value" id="card-score-B"></span>
+						</div>
+					</div>
+				</div>
+				<p class="card-disclaimer">{t['results.disclaimer']}</p>
+			</div>
+			
+			<div class="card-footer">
+				<p>Check your score at:</p>
+				<strong>asrs18.com</strong>
+			</div>
+		</div>
+	</div>
+
+	<!-- html2canvas via Bunny CDN (hopjs) -->
+	<script src="https://cdn.hopjs.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" is:inline></script>
+
 	<script is:inline define:vars={{ lang, t }}>
 		const form = document.getElementById('asrs-form');
 		const modal = document.getElementById('result-modal');
@@ -202,6 +238,11 @@ const localeExamples = examples[lang];
 		const questions = document.querySelectorAll('.question-container');
 		const clearBtn = document.getElementById('clear-progress');
 		const partBDetails = document.getElementById('part-b-details');
+		const shareBtn = document.getElementById('share-button');
+		const cardResultLevel = document.getElementById('card-result-level');
+		const cardScoreA = document.getElementById('card-score-A');
+		const cardScoreB = document.getElementById('card-score-B');
+		const cardScoreItemB = document.getElementById('card-score-item-B');
 
 		// Clear Progress
 		clearBtn?.addEventListener('click', () => {
@@ -373,24 +414,72 @@ const localeExamples = examples[lang];
 			if (partBAnswered) {
 				resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore.toString());
 				cardPartB.style.display = 'block';
-				resultScores.style.gridTemplateColumns = '1fr 1fr';
+				
+				// Update Share Card
+				cardScoreB.textContent = `${partBScore}/12`;
+				cardScoreItemB.style.display = 'flex';
+
+				if (window.innerWidth > 600) {
+					resultScores.style.display = 'grid';
+					resultScores.style.gridTemplateColumns = '1fr 1fr';
+				} else {
+					resultScores.style.display = 'flex';
+					resultScores.style.flexDirection = 'column';
+				}
 			} else {
 				cardPartB.style.display = 'none';
-				resultScores.style.gridTemplateColumns = '1fr';
+				resultScores.style.display = 'block';
+				
+				// Update Share Card
+				cardScoreItemB.style.display = 'none';
 			}
 
 
 			if (partAScore >= 4) {
-				resultLevel.textContent = t['results.level.high'];
+				const levelText = t['results.level.high'];
+				resultLevel.textContent = levelText;
+				cardResultLevel.textContent = levelText;
 				resultInterpretation.textContent = t['results.interpretation.high'];
 				resultLevel.style.color = 'var(--pico-primary)';
 			} else {
-				resultLevel.textContent = t['results.level.low'];
+				const levelText = t['results.level.low'];
+				resultLevel.textContent = levelText;
+				cardResultLevel.textContent = levelText;
 				resultInterpretation.textContent = t['results.interpretation.low'];
 				resultLevel.style.color = 'inherit';
 			}
 
+			// Update Share Card Part A
+			cardScoreA.textContent = `${partAScore}/6`;
+
 			modal.showModal();
+		});
+
+		// Share Image Logic
+		shareBtn?.addEventListener('click', async () => {
+			const originalText = shareBtn.textContent;
+			shareBtn.textContent = '...';
+			shareBtn.disabled = true;
+
+			try {
+				const card = document.getElementById('share-card');
+				const canvas = await html2canvas(card, {
+					scale: 1, 
+					useCORS: true,
+					backgroundColor: '#0f172a',
+				});
+
+				const image = canvas.toDataURL('image/png');
+				const link = document.createElement('a');
+				link.download = `asrs18-result-${lang}.png`;
+				link.href = image;
+				link.click();
+			} catch (err) {
+				console.error('Error generating image:', err);
+			} finally {
+				shareBtn.textContent = originalText;
+				shareBtn.disabled = false;
+			}
 		});
 
 		closeModal?.addEventListener('click', () => {
@@ -698,6 +787,102 @@ const localeExamples = examples[lang];
 			padding-top: 1rem;
 			margin-bottom: 1.5rem;
 		}
+		
+		/* Shareable Card Styles */
+		.share-card {
+			width: 1080px;
+			height: 1920px;
+			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+			color: white;
+			display: flex;
+			flex-direction: column;
+			padding: 80px;
+			font-family: system-ui, -apple-system, sans-serif;
+		}
+		.share-card .card-header {
+			text-align: center;
+			margin-bottom: 120px;
+		}
+		.share-card .card-tag {
+			background: #3b82f6;
+			padding: 10px 30px;
+			border-radius: 50px;
+			font-size: 32px;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 4px;
+		}
+		.share-card h1 {
+			font-size: 160px;
+			margin: 40px 0 0 0;
+			color: white;
+			line-height: 1;
+		}
+		.share-card .card-header p {
+			font-size: 56px;
+			opacity: 0.8;
+			margin: 0;
+		}
+		.share-card .card-body {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		.share-card .result-box {
+			background: rgba(255, 255, 255, 0.05);
+			border: 4px solid #3b82f6;
+			border-radius: 40px;
+			padding: 80px;
+			text-align: center;
+		}
+		.share-card h2 {
+			font-size: 72px;
+			color: #3b82f6;
+			margin-bottom: 60px;
+			line-height: 1.2;
+		}
+		.share-card .card-scores {
+			display: flex;
+			flex-direction: column;
+			gap: 40px;
+		}
+		.share-card .card-score-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+			padding-bottom: 20px;
+		}
+		.share-card .label {
+			font-size: 40px;
+			opacity: 0.8;
+		}
+		.share-card .value {
+			font-size: 64px;
+			font-weight: 800;
+		}
+		.share-card .card-disclaimer {
+			margin-top: 80px;
+			font-size: 28px;
+			opacity: 0.5;
+			text-align: center;
+			font-style: italic;
+		}
+		.share-card .card-footer {
+			text-align: center;
+			padding-top: 100px;
+		}
+		.share-card .card-footer p {
+			font-size: 36px;
+			opacity: 0.6;
+			margin-bottom: 10px;
+		}
+		.share-card .card-footer strong {
+			font-size: 64px;
+			color: #3b82f6;
+		}
+
 		.practitioner-note {
 			display: flex;
 			gap: 0.75rem;
