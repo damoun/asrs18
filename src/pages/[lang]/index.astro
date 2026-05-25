@@ -25,48 +25,83 @@ const localeQuestions = questions[lang];
 		</hgroup>
 		
 		<form id="asrs-form">
-			{localeQuestions.map((question, index) => (
-				<>
-					<div class="question-container" data-index={index}>
-						<p class="question-text">
-							<span class="question-number">{index + 1}.</span> {question}
-						</p>
-						<fieldset>
-							<div class="grid">
-								<label>
-									<input type="radio" name={`q${index}`} value="0" class="option-input" required={index < 6} />
-									<span class="option-label">{t['options.never']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="1" class="option-input" />
-									<span class="option-label">{t['options.rarely']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="2" class="option-input" />
-									<span class="option-label">{t['options.sometimes']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="3" class="option-input" />
-									<span class="option-label">{t['options.often']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="4" class="option-input" />
-									<span class="option-label">{t['options.veryOften']}</span>
-								</label>
-							</div>
-						</fieldset>
-
-					</div>
-					{index === 5 && (
-						<div class="part-divider">
-							<hr />
-							<span>{t['assessment.partB']} <small>({lang === 'fr' ? 'Optionnel' : (lang === 'pt' || lang === 'es' || lang === 'it' ? 'Opcional' : 'Optional')})</small></span>
+			{/* Part A: Mandatory Screening */}
+			{localeQuestions.slice(0, 6).map((question, index) => (
+				<div class="question-container" data-index={index}>
+					<p class="question-text">
+						<span class="question-number">{index + 1}.</span> {question}
+					</p>
+					<fieldset>
+						<div class="grid">
+							<label>
+								<input type="radio" name={`q${index}`} value="0" class="option-input" required />
+								<span class="option-label">{t['options.never']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="1" class="option-input" />
+								<span class="option-label">{t['options.rarely']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="2" class="option-input" />
+								<span class="option-label">{t['options.sometimes']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="3" class="option-input" />
+								<span class="option-label">{t['options.often']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="4" class="option-input" />
+								<span class="option-label">{t['options.veryOften']}</span>
+							</label>
 						</div>
-					)}
-				</>
+					</fieldset>
+				</div>
 			))}
+
+			{/* Part B: Optional Frequency Details */}
+			<details id="part-b-details">
+				<summary class="part-divider">
+					<hr />
+					<span>{t['assessment.partB']} <small>({lang === 'fr' ? 'Optionnel' : (lang === 'pt' || lang === 'es' || lang === 'it' ? 'Opcional' : 'Optional')})</small></span>
+				</summary>
+				
+				{localeQuestions.slice(6).map((question, index) => {
+					const actualIndex = index + 6;
+					return (
+						<div class="question-container" data-index={actualIndex}>
+							<p class="question-text">
+								<span class="question-number">{actualIndex + 1}.</span> {question}
+							</p>
+							<fieldset>
+								<div class="grid">
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" />
+										<span class="option-label">{t['options.never']}</span>
+									</label>
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" />
+										<span class="option-label">{t['options.rarely']}</span>
+									</label>
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" />
+										<span class="option-label">{t['options.sometimes']}</span>
+									</label>
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" />
+										<span class="option-label">{t['options.often']}</span>
+									</label>
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" />
+										<span class="option-label">{t['options.veryOften']}</span>
+									</label>
+								</div>
+							</fieldset>
+						</div>
+					);
+				})}
+			</details>
 			
-			<button type="submit">{t['assessment.submit']}</button>
+			<button type="submit" id="submit-btn">{t['assessment.submit']}</button>
 		</form>
 	</section>
 
@@ -273,10 +308,24 @@ const localeQuestions = questions[lang];
 			outline: 2px solid var(--pico-primary);
 			outline-offset: 2px;
 		}
+		#part-b-details {
+			border: none;
+			padding: 0;
+			margin: 0;
+			background: none;
+		}
+		#part-b-details[open] {
+			margin-bottom: 3rem;
+		}
 		.part-divider {
 			position: relative;
 			text-align: center;
 			margin: 5rem 0;
+			list-style: none;
+			cursor: pointer;
+		}
+		.part-divider::-webkit-details-marker {
+			display: none;
 		}
 		.part-divider hr {
 			margin: 0;
