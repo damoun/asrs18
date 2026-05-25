@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { ui, type Language } from '../../data/i18n';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'es' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'pt' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Language };
+const t = ui[lang];
+
+const policies = {
+  en: {
+    title: 'Privacy Policy',
+    content: `
+      <p>This website is designed with a "Privacy by Design" approach. We do not collect, store, or share any personal or medical data.</p>
+      <h3>1. Data Collection</h3>
+      <p>We do not collect any personal data. All information you enter into the ASRS-18 questionnaire is processed entirely within your browser (client-side).</p>
+      <h3>2. Data Storage</h3>
+      <p>No data is sent to our servers. Your results are only available to you while the page is open. If you choose to generate a shareable image, that process also happens entirely on your device.</p>
+      <h3>3. Cookies and Tracking</h3>
+      <p>We do not use tracking cookies or third-party analytics that could identify you. We use privacy-first resource delivery (Bunny CDN) which does not track individual users.</p>
+      <h3>4. Your Rights</h3>
+      <p>Since we do not store your data, there is no data for us to provide, rectify, or delete. Your privacy is absolute by technical design.</p>
+    `
+  },
+  fr: {
+    title: 'Politique de confidentialité',
+    content: `
+      <p>Ce site est conçu selon une approche de "Confidentialité dès la conception". Nous ne collectons, ne stockons ni ne partageons aucune donnée personnelle ou médicale.</p>
+      <h3>1. Collecte de données</h3>
+      <p>Nous ne collectons aucune donnée personnelle. Toutes les informations que vous saisissez dans le questionnaire ASRS-18 sont traitées entièrement dans votre navigateur (côté client).</p>
+      <h3>2. Stockage des données</h3>
+      <p>Aucune donnée n'est envoyée à nos serveurs. Vos résultats ne sont disponibles que pour vous tant que la page est ouverte. Si vous choisissez de générer une image partageable, ce processus se déroule également entièrement sur votre appareil.</p>
+      <h3>3. Cookies et suivi</h3>
+      <p>Nous n'utilisons pas de cookies de suivi ni d'outils d'analyse tiers susceptibles de vous identifier. Nous utilisons une distribution de ressources respectueuse de la vie privée (Bunny CDN) qui ne suit pas les utilisateurs individuels.</p>
+      <h3>4. Vos droits</h3>
+      <p>Puisque nous ne stockons pas vos données, il n'y a aucune donnée que nous puissions fournir, rectifier ou supprimer. Votre vie privée est absolue de par la conception technique.</p>
+    `
+  },
+  es: {
+    title: 'Política de privacidad',
+    content: `
+      <p>Este sitio web está diseñado con un enfoque de "Privacidad desde el diseño". No recopilamos, almacenamos ni compartimos ningún dato personal o médico.</p>
+      <h3>1. Recopilación de datos</h3>
+      <p>No recopilamos ningún dato personal. Toda la información que ingresa en el cuestionario ASRS-18 se procesa íntegramente en su navegador (del lado del cliente).</p>
+      <h3>2. Almacenamiento de datos</h3>
+      <p>No se envían datos a nuestros servidores. Sus resultados solo están disponibles para usted mientras la página está abierta. Si elige generar una imagen para compartir, ese proceso también ocurre íntegramente en su dispositivo.</p>
+      <h3>3. Cookies y seguimiento</h3>
+      <p>No utilizamos cookies de seguimiento ni análisis de terceros que puedan identificarlo. Utilizamos la entrega de recursos que prioriza la privacidad (Bunny CDN), que no rastrea a los usuarios individuales.</p>
+      <h3>4. Sus derechos</h3>
+      <p>Dado que no almacenamos sus datos, no hay datos que podamos proporcionar, rectificar o eliminar. Su privacidad es absoluta por diseño técnico.</p>
+    `
+  },
+  it: {
+    title: 'Informativa sulla privacy',
+    content: `
+      <p>Questo sito web è progettato con un approccio "Privacy by Design". Non raccogliamo, memorizziamo o condividiamo dati personali o medici.</p>
+      <h3>1. Raccolta dei dati</h3>
+      <p>Non raccogliamo alcun dato personale. Tutte le informazioni inserite nel questionario ASRS-18 vengono elaborate interamente all'interno del browser (lato client).</p>
+      <h3>2. Archiviazione dei dati</h3>
+      <p>Nessun dato viene inviato ai nostri server. I tuoi risultati sono disponibili solo per te finché la pagina è aperta. Se scegli di generare un'immagine condivisibile, anche quel processo avviene interamente sul tuo dispositivo.</p>
+      <h3>3. Cookie e tracciamento</h3>
+      <p>Non utilizziamo cookie di tracciamento o analisi di terze parti che potrebbero identificarti. Utilizziamo la distribuzione di risorse privacy-first (Bunny CDN) che non traccia i singoli utenti.</p>
+      <h3>4. I tuoi diritti</h3>
+      <p>Poiché non memorizziamo i tuoi dati, non ci sono dati da fornire, rettificare o eliminare. La tua privacy è assoluta per progettazione tecnica.</p>
+    `
+  },
+  pt: {
+    title: 'Política de privacidade',
+    content: `
+      <p>Este website foi concebido com uma abordagem de "Privacidade desde a Conceção". Não recolhemos, armazenamos ou partilhamos quaisquer dados pessoais ou médicos.</p>
+      <h3>1. Recolha de Dados</h3>
+      <p>Não recolhemos quaisquer dados pessoais. Todas as informações que introduz no questionário ASRS-18 são processadas inteiramente no seu navegador (client-side).</p>
+      <h3>2. Armazenamento de Dados</h3>
+      <p>Nenhuns dados são enviados para os nossos servidores. Os seus resultados só estão disponíveis para si enquanto a página estiver aberta. Se optar por gerar uma imagem partilhável, esse processo também acontece inteiramente no seu dispositivo.</p>
+      <h3>3. Cookies e Rastreio</h3>
+      <p>Não utilizamos cookies de rastreio ou análises de terceiros que o possam identificar. Utilizamos a entrega de recursos que prioriza a privacidade (Bunny CDN), que não rastreia utilizadores individuais.</p>
+      <h3>4. Os Seus Direitos</h3>
+      <p>Uma vez que não armazenamos os seus dados, não existem dados para nós fornecermos, retificarmos ou eliminarmos. A sua privacidade é absoluta por design técnico.</p>
+    `
+  }
+};
+
+const policy = policies[lang];
+---
+
+<Layout title={`${policy.title} | ${t['site.title']}`} lang={lang}>
+	<section>
+		<h2>{policy.title}</h2>
+		<div set:html={policy.content} />
+		<a href={`/${lang}/`} role="button" class="secondary">{t['assessment.start']}</a>
+	</section>
+</Layout>
