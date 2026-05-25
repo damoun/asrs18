@@ -25,11 +25,14 @@ const languages = [
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" href="/favicon.svg" />
+		<meta name="theme-color" content="#3b82f6" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 		
 		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
 
 		{/* i18n alternates */}
 		{languages.map((l) => (
@@ -94,6 +97,13 @@ const languages = [
 			}
 
 			/* Custom styles to complement Pico.css */
+			small {
+				color: var(--pico-color); /* More contrast than default muted small */
+				opacity: 0.85;
+			}
+			.intro-text, .time-estimate {
+				opacity: 0.9;
+			}
 			header {
 				padding: 1rem 0;
 				border-bottom: 1px solid var(--pico-muted-border-color);
