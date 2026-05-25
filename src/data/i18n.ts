@@ -14,6 +14,7 @@ export const ui = {
     'options.never': 'Never',
     'options.never.desc': 'No occurrence in the last 6 months',
     'options.rarely': 'Rarely',
+    'options.rarely.desc': 'Once or twice in the last 6 months',
     'options.sometimes': 'Sometimes',
     'options.sometimes.desc': 'Happens monthly (2-3 times a month)',
     'options.often': 'Often',
@@ -46,6 +47,8 @@ export const ui = {
     'report.question': 'Question',
     'report.response': 'Response',
     'report.notes': 'Notes for Practitioner',
+    'report.title': 'ASRS-18 Clinical Report',
+    'report.subtitle': 'Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist',
   },
   fr: {
     'site.title': 'Auto-évaluation ASRS-18 TDAH',
@@ -62,6 +65,7 @@ export const ui = {
     'options.never': 'Jamais',
     'options.never.desc': 'Aucune occurrence au cours des 6 derniers mois',
     'options.rarely': 'Rarement',
+    'options.rarely.desc': 'Une ou deux fois au cours des 6 derniers mois',
     'options.sometimes': 'Parfois',
     'options.sometimes.desc': 'Occurrence mensuelle (2-3 fois par mois)',
     'options.often': 'Souvent',
@@ -94,6 +98,8 @@ export const ui = {
     'report.question': 'Question',
     'report.response': 'Réponse',
     'report.notes': 'Notes pour le praticien',
+    'report.title': 'Rapport Clinique ASRS-18',
+    'report.subtitle': 'Échelle d\'auto-évaluation du TDAH chez l\'adulte (ASRS-v1.1)',
   },
   es: {
     'site.title': 'Autoinforme ASRS-18 TDAH',
@@ -142,6 +148,8 @@ export const ui = {
     'report.question': 'Pregunta',
     'report.response': 'Respuesta',
     'report.notes': 'Notas para el médico',
+    'report.title': 'Informe Clínico ASRS-18',
+    'report.subtitle': 'Escala de Autoinforme de TDAH para Adultos (ASRS-v1.1)',
   },
   it: {
     'site.title': 'Autovalutazione ASRS-18 ADHD',
@@ -190,6 +198,8 @@ export const ui = {
     'report.question': 'Domanda',
     'report.response': 'Risposta',
     'report.notes': 'Note per l\'operatore sanitario',
+    'report.title': 'Rapporto Clinique ASRS-18',
+    'report.subtitle': 'Scala di autovalutazione ADHD per adulti (ASRS-v1.1)',
   },
   pt: {
     'site.title': 'Auto-relato ASRS-18 TDAH',
@@ -238,6 +248,8 @@ export const ui = {
     'report.question': 'Questão',
     'report.response': 'Resposta',
     'report.notes': 'Notes para o profissional de saúde',
+    'report.title': 'Relatório Clínico ASRS-18',
+    'report.subtitle': 'Escala de Auto-relato de TDAH em Adultos (ASRS-v1.1)',
   },
 } as const;
 
@@ -335,7 +347,7 @@ export const examples = {
     "distrair-se durante uma reunião longa, ou ter de ler o mesmo parágrafo várias vezes.",
     "a sua mente vagueia mesmo quando alguém está a falar consigo cara a cara.",
     "perder as chaves, o telemóvel ou a carteira frequentemente pela casa.",
-    "distrair-se com um pássaro à janela ou com uma conversa na sala ao lado.",
+    "distraer-se com um pássaro à janela ou com uma conversa na sala ao lado.",
     "sair da mesa de jantar antes de todos terminarem, ou sentir necessidade de andar de um lado para o outro durante um filme.",
     "sentir uma sensação interna de inquietação, mesmo que esteja sentado e parado.",
     "ter dificuldade em manter-se calmo ou tranquilo durante uma atividade de lazer.",
@@ -414,7 +426,7 @@ export const questions = {
     "Quando hai un compito che richiede molta riflessione, quanto spesso eviti o rimandi l'inizio?",
     "Quanto spesso ti muovi nervosamente con le mani o con i piedi quando devi stare seduto per molto tempo?",
     "Quanto spesso ti senti eccessivamente attivo e spinto a fare cose, come se fossi guidato da un motore?",
-    "Quanto spesso commetti errori per distrazione quando devi lavorare su un progetto noioso o difficile?",
+    "Quanto spesso commetti errori per distrazione quando devi lavorare su un procedimento noioso o difficile?",
     "Quanto spesso hai difficoltà a mantenere l'attenzione quando lavori su un compito noioso o ripetitivo?",
     "Quanto spesso hai difficoltà a concentrarti su ciò che ti dicono le persone, anche quando ti parlano direttamente?",
     "Quanto spesso perdi o hai difficoltà a trovare le cose a casa o al lavoro?",

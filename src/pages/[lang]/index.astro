@@ -424,12 +424,14 @@ const localeExamples = examples[lang];
 				let y = margin;
 				doc.setFontSize(22);
 				doc.setTextColor(59, 130, 246);
-				doc.text('ASRS-18 Clinical Report', margin, y);
+				doc.text(t['report.title'], margin, y);
 				y += 10;
+
 				doc.setFontSize(12);
 				doc.setTextColor(100, 116, 139);
-				doc.text('Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist', margin, y);
+				doc.text(t['report.subtitle'], margin, y);
 				y += 15;
+
 				const formData = new FormData(form);
 				let partAScore = 0;
 				let partBScore = 0;
