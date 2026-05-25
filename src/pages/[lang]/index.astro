@@ -24,34 +24,41 @@ const localeQuestions = questions[lang];
 		
 		<form id="asrs-form">
 			{localeQuestions.map((question, index) => (
-				<div class="question-container" data-index={index}>
-					<p><strong>{index + 1}. {question}</strong></p>
-					<fieldset>
-						<div class="grid">
-							<label>
-								<input type="radio" name={`q${index}`} value="0" required />
-								{t['options.never']}
-							</label>
-							<label>
-								<input type="radio" name={`q${index}`} value="1" />
-								{t['options.rarely']}
-							</label>
-							<label>
-								<input type="radio" name={`q${index}`} value="2" />
-								{t['options.sometimes']}
-							</label>
-							<label>
-								<input type="radio" name={`q${index}`} value="3" />
-								{t['options.often']}
-							</label>
-							<label>
-								<input type="radio" name={`q${index}`} value="4" />
-								{t['options.veryOften']}
-							</label>
+				<>
+					<div class="question-container" data-index={index}>
+						<p><strong>{index + 1}. {question}</strong></p>
+						<fieldset>
+							<div class="grid">
+								<label>
+									<input type="radio" name={`q${index}`} value="0" required />
+									{t['options.never']}
+								</label>
+								<label>
+									<input type="radio" name={`q${index}`} value="1" />
+									{t['options.rarely']}
+								</label>
+								<label>
+									<input type="radio" name={`q${index}`} value="2" />
+									{t['options.sometimes']}
+								</label>
+								<label>
+									<input type="radio" name={`q${index}`} value="3" />
+									{t['options.often']}
+								</label>
+								<label>
+									<input type="radio" name={`q${index}`} value="4" />
+									{t['options.veryOften']}
+								</label>
+							</div>
+						</fieldset>
+					</div>
+					{index === 5 && (
+						<div class="part-divider">
+							<hr />
+							<span>{t['assessment.partB']}</span>
 						</div>
-					</fieldset>
-					{index === 5 && <hr aria-label={t['assessment.partB']} />}
-				</div>
+					)}
+				</>
 			))}
 			
 			<button type="submit">{t['assessment.submit']}</button>
@@ -91,22 +98,26 @@ const localeQuestions = questions[lang];
 		.grid {
 			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 		}
-		hr {
-			margin: 3rem 0;
-			border-top: 2px solid var(--pico-primary);
-		}
-		hr::before {
-			content: attr(aria-label);
-			display: block;
+		.part-divider {
+			position: relative;
 			text-align: center;
-			margin-top: -1.25rem;
+			margin: 4rem 0;
+		}
+		.part-divider hr {
+			margin: 0;
+			border-top: 2px solid var(--pico-muted-border-color);
+		}
+		.part-divider span {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 			background: var(--pico-background-color);
-			width: fit-content;
-			margin-left: auto;
-			margin-right: auto;
-			padding: 0 1rem;
+			padding: 0 1.5rem;
 			font-weight: bold;
 			color: var(--pico-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.1rem;
 		}
 	</style>
 </Layout>
