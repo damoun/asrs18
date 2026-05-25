@@ -235,7 +235,11 @@ const localeExamples = examples[lang];
 		is:inline>
 	</script>
 
-	<script is:inline define:vars={{ lang, t }}>
+	<!-- jsPDF and AutoTable via Bunny CDN (hopjs) -->
+	<script src="https://cdn.hopjs.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" is:inline></script>
+	<script src="https://cdn.hopjs.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js" is:inline></script>
+
+	<script is:inline define:vars={{ lang, t, localeQuestions }}>
 		const form = document.getElementById('asrs-form');
 		const modal = document.getElementById('result-modal');
 		const closeModal = document.getElementById('close-modal');
@@ -475,80 +479,147 @@ const localeExamples = examples[lang];
 
 		// Share Image Logic (Summary)
 		shareBtn?.addEventListener('click', async () => {
-			await generateImage(false);
+			await generateImage();
 		});
 
-		// Share Image Logic (Detailed)
+		// Download PDF Logic (Detailed)
 		shareDetailedBtn?.addEventListener('click', async () => {
-			await generateImage(true);
+			await generatePDF();
 		});
 
-		async function generateImage(isDetailed) {
-			const activeBtn = isDetailed ? shareDetailedBtn : shareBtn;
-			const originalText = activeBtn.textContent;
-			activeBtn.textContent = '...';
-			activeBtn.disabled = true;
+		async function generatePDF() {
+			const originalText = shareDetailedBtn.textContent;
+			shareDetailedBtn.textContent = '...';
+			shareDetailedBtn.disabled = true;
+
+			try {
+				const { jsPDF } = window.jspdf;
+				const doc = new jsPDF();
+				const margin = 20;
+				let y = margin;
+
+				// Header
+				doc.setFontSize(22);
+				doc.setTextColor(59, 130, 246);
+				doc.text('ASRS-18 Clinical Report', margin, y);
+				y += 10;
+				
+				doc.setFontSize(12);
+				doc.setTextColor(100, 116, 139);
+				doc.text('Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist', margin, y);
+				y += 15;
+
+				// Scores Section
+				const formData = new FormData(form);
+				let partAScore = 0;
+				let partBScore = 0;
+				const tableData = [];
+				const optionLabels = [
+					t['options.never'],
+					t['options.rarely'],
+					t['options.sometimes'],
+					t['options.often'],
+					t['options.veryOften']
+				];
+
+				for (let i = 0; i < 18; i++) {
+					const value = formData.get(`q${i}`);
+					const responseLabel = value !== null ? optionLabels[parseInt(value.toString())] : '-';
+					
+					if (value !== null) {
+						const numericValue = parseInt(value.toString());
+						if (numericValue >= shadedThresholds[i]) {
+							if (i < 6) partAScore++;
+							else partBScore++;
+						}
+					}
+					
+					tableData.push([i + 1, localeQuestions[i], responseLabel]);
+				}
+
+				// Summary Box
+				doc.setDrawColor(59, 130, 246);
+				doc.setFillColor(248, 250, 252);
+				doc.rect(margin, y, 170, 40, 'FD');
+				
+				doc.setFontSize(14);
+				doc.setTextColor(30, 41, 59);
+				doc.setFont(undefined, 'bold');
+				doc.text(t['results.title'], margin + 10, y + 15);
+				
+				doc.setFontSize(11);
+				doc.setFont(undefined, 'normal');
+				doc.text(t['results.score_info'].replace('{score}', partAScore.toString()), margin + 10, y + 25);
+				doc.text(t['results.score_info_partB'].replace('{score}', partBScore.toString()), margin + 10, y + 32);
+				
+				const levelText = partAScore >= 4 ? t['results.level.high'] : t['results.level.low'];
+				doc.setTextColor(partAScore >= 4 ? 37 : 30, partAScore >= 4 ? 99 : 41, partAScore >= 4 ? 235 : 59);
+				doc.setFont(undefined, 'bold');
+				doc.text(levelText, 180, y + 25, { align: 'right' });
+				
+				y += 55;
+
+				// Table
+				doc.autoTable({
+					startY: y,
+					head: [[ '#', t['report.question'], t['report.response'] ]],
+					body: tableData,
+					headStyles: { fillColor: [59, 130, 246] },
+					columnStyles: {
+						0: { cellWidth: 10 },
+						2: { cellWidth: 40, fontStyle: 'bold' }
+					},
+					margin: { left: margin, right: margin }
+				});
+
+				// Footer
+				const finalY = doc.lastAutoTable.finalY + 20;
+				doc.setFontSize(10);
+				doc.setTextColor(148, 163, 184);
+				doc.setFont(undefined, 'italic');
+				doc.text(t['results.disclaimer'], margin, finalY, { maxWidth: 170 });
+				
+				doc.setFont(undefined, 'normal');
+				doc.text(`${t['report.check_at']} asrs18.com`, 105, 285, { align: 'center' });
+
+				doc.save(`asrs18-report-${lang}.pdf`);
+			} catch (err) {
+				console.error('Error generating PDF:', err);
+			} finally {
+				shareDetailedBtn.textContent = originalText;
+				shareDetailedBtn.disabled = false;
+			}
+		}
+
+		async function generateImage() {
+			const originalText = shareBtn.textContent;
+			shareBtn.textContent = '...';
+			shareBtn.disabled = true;
 
 			try {
 				const card = document.getElementById('share-card');
-				const detailedContent = document.getElementById('card-detailed-content');
-				const symptomList = document.getElementById('card-symptom-list');
 				
-				if (isDetailed) {
-					card.classList.remove('summary-mode');
-					detailedContent.style.display = 'block';
-					symptomList.innerHTML = '';
-					
-					// Find all frequent symptoms (score >= threshold)
-					const formData = new FormData(form);
-					const frequentQuestions = [];
-					
-					for (let i = 0; i < 18; i++) {
-						const value = formData.get(`q${i}`);
-						if (value !== null) {
-							const numericValue = parseInt(value.toString());
-							if (numericValue >= shadedThresholds[i]) {
-								const qText = document.querySelectorAll('.question-text')[i]?.textContent.replace(/^\d+\.\s*/, '').trim();
-								if (qText) frequentQuestions.push(qText);
-							}
-						}
-					}
-
-					frequentQuestions.slice(0, 10).forEach(q => {
-						const item = document.createElement('div');
-						item.className = 'symptom-item';
-						item.innerHTML = `
-							<span class="symptom-bullet">•</span>
-							<span class="symptom-text">${q}</span>
-						`;
-						symptomList.appendChild(item);
-					});
-
-					card.style.height = 'auto';
-					card.style.minHeight = '1920px';
-				} else {
-					card.classList.add('summary-mode');
-					detailedContent.style.display = 'none';
-					card.style.height = '1920px';
-				}
+				card.classList.add('summary-mode');
+				document.getElementById('card-detailed-content').style.display = 'none';
+				card.style.height = '1920px';
 
 				const canvas = await html2canvas(card, {
 					scale: 1, 
 					useCORS: true,
-					backgroundColor: isDetailed ? '#ffffff' : '#0f172a',
+					backgroundColor: '#0f172a',
 					windowWidth: 1080,
 				});
 
 				const image = canvas.toDataURL('image/png');
 				const link = document.createElement('a');
-				link.download = `asrs18-${isDetailed ? 'report' : 'summary'}-${lang}.png`;
+				link.download = `asrs18-summary-${lang}.png`;
 				link.href = image;
 				link.click();
 			} catch (err) {
 				console.error('Error generating image:', err);
 			} finally {
-				activeBtn.textContent = originalText;
-				activeBtn.disabled = false;
+				shareBtn.textContent = originalText;
+				shareBtn.disabled = false;
 			}
 		}
 
