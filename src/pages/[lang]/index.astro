@@ -187,7 +187,7 @@ const localeExamples = examples[lang];
 	</dialog>
 
 	<div id="share-card-wrapper" style="position: absolute; left: -9999px; top: 0;">
-		<div id="share-card" class="share-card">
+		<div id="share-card" class="share-card summary-mode">
 			<div class="card-header">
 				<div class="card-tag">ASRS-v1.1</div>
 				<div class="card-title">ASRS-18</div>
@@ -196,24 +196,17 @@ const localeExamples = examples[lang];
 			
 			<div class="card-body">
 				<div class="result-box">
-					<div class="result-level-text" id="card-result-level"></div>
+					<div class="result-level-text" id="share-result-level"></div>
 					<div class="card-scores">
 						<div class="card-score-item">
 							<span class="label">{t['results.partA.title']}</span>
-							<span class="value" id="card-score-A"></span>
+							<span class="value" id="share-score-A"></span>
 						</div>
-						<div class="card-score-item" id="card-score-item-B">
+						<div class="card-score-item" id="share-score-item-B">
 							<span class="label">{t['results.partB.title']}</span>
-							<span class="value" id="card-score-B"></span>
+							<span class="value" id="share-score-B"></span>
 						</div>
 					</div>
-				</div>
-
-				<div id="card-detailed-content" style="display: none;">
-					<h3 class="detailed-header">{t['report.frequent_symptoms']}</h3>
-					<ul id="card-symptom-list" class="symptom-list">
-						<!-- Symptoms will be injected here -->
-					</ul>
 				</div>
 
 				<div class="card-disclaimer">{t['results.disclaimer']}</div>
@@ -272,10 +265,12 @@ const localeExamples = examples[lang];
 		const partBDetails = document.getElementById('part-b-details');
 		const shareBtn = document.getElementById('share-button');
 		const shareDetailedBtn = document.getElementById('share-detailed-button');
-		const cardResultLevel = document.getElementById('card-result-level');
-		const cardScoreA = document.getElementById('card-score-A');
-		const cardScoreB = document.getElementById('card-score-B');
-		const cardScoreItemB = document.getElementById('card-score-item-B');
+		
+		// Share card elements
+		const shareResultLevel = document.getElementById('share-result-level');
+		const shareScoreA = document.getElementById('share-score-A');
+		const shareScoreB = document.getElementById('share-score-B');
+		const shareScoreItemB = document.getElementById('share-score-item-B');
 		const cardPartB = document.getElementById('card-part-b');
 
 		// Clear Progress
@@ -321,7 +316,6 @@ const localeExamples = examples[lang];
 				const currentIndex = parseInt(currentQ.dataset.index);
 				
 				if (currentIndex === 5) {
-					// End of Part A: Scroll to completion zone (Part B intro + Submit)
 					const completionZone = document.getElementById('completion-zone');
 					if (completionZone) {
 						completionZone.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -338,16 +332,8 @@ const localeExamples = examples[lang];
 		function updateProgress() {
 			const formData = new FormData(form);
 			const keys = Array.from(formData.keys()).filter(key => key.startsWith('q'));
-			
-			const answeredA = keys.filter(k => {
-				const index = parseInt(k.substring(1));
-				return index < 6;
-			}).length;
-			
-			const answeredB = keys.filter(k => {
-				const index = parseInt(k.substring(1));
-				return index >= 6;
-			}).length;
+			const answeredA = keys.filter(k => parseInt(k.substring(1)) < 6).length;
+			const answeredB = keys.filter(k => parseInt(k.substring(1)) >= 6).length;
 
 			progressBarA.value = answeredA;
 			progressTextA.textContent = `${answeredA}/6`;
@@ -367,8 +353,7 @@ const localeExamples = examples[lang];
 			
 			if (shouldScroll) {
 				const rect = el.getBoundingClientRect();
-				// Use a generous threshold to account for the sticky progress bar
-				const threshold = 160; // ~10rem
+				const threshold = 160;
 				if (rect.top < threshold || rect.bottom > window.innerHeight) {
 					el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
@@ -396,10 +381,7 @@ const localeExamples = examples[lang];
 					}
 				}
 			}
-			
 			updateProgress();
-
-			// If user has progress, highlight the first unanswered question and scroll to it
 			if (lastAnsweredIndex !== -1 && lastAnsweredIndex < 17) {
 				highlightQuestion(questions[lastAnsweredIndex + 1], true);
 			} else if (lastAnsweredIndex === 17) {
@@ -409,16 +391,8 @@ const localeExamples = examples[lang];
 
 		loadSavedState();
 
-		// ASRS v1.1 Shaded Boxes Logic
-		// Part A: Q1-Q3 (Sometimes, Often, Very Often), Q4-Q6 (Often, Very Often)
-		// Part B: Q7, Q8, Q9 (Sometimes, Often, Very Often), Q10, Q11 (Often, Very Often), 
-		//         Q12, Q13 (Sometimes, Often, Very Often), Q14 (Often, Very Often), 
-		//         Q15 (Sometimes, Often, Very Often), Q16 (Often, Very Often),
-		//         Q17, Q18 (Often, Very Often)
-		const shadedThresholds = [
-			2, 2, 2, 3, 3, 3, // Part A (0-5)
-			2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 3, 3 // Part B (6-17)
-		];
+		const shadedThresholds = [2, 2, 2, 3, 3, 3, 2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 3, 3];
+
 		form?.addEventListener('submit', (e) => {
 			e.preventDefault();
 			const formData = new FormData(form);
@@ -431,184 +405,47 @@ const localeExamples = examples[lang];
 				if (value !== null) {
 					const numericValue = parseInt(value.toString());
 					if (numericValue >= shadedThresholds[i]) {
-						if (i < 6) {
-							partAScore++;
-						} else {
-							partBScore++;
-						}
+						if (i < 6) partAScore++;
+						else partBScore++;
 					}
 					if (i >= 6) partBAnswered = true;
 				}
 			}
 
-			// Prepare Results
+			// Update Web Modal
 			resultTitle.textContent = t['results.title'];
 			resultScoreInfoA.textContent = t['results.score_info'].replace('{score}', partAScore.toString());
-
+			
 			if (partBAnswered) {
 				resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore.toString());
 				cardPartB.style.display = 'block';
-				
-				// Update Share Card
-				cardScoreB.textContent = `${partBScore}/12`;
-				cardScoreItemB.style.display = 'flex';
-
 				resultScores.style.display = 'grid';
+				shareScoreItemB.style.display = 'flex';
+				shareScoreB.textContent = `${partBScore}/12`;
 			} else {
 				cardPartB.style.display = 'none';
 				resultScores.style.display = 'block';
-				
-				// Update Share Card
-				cardScoreItemB.style.display = 'none';
+				shareScoreItemB.style.display = 'none';
 			}
 
-
-			if (partAScore >= 4) {
-				const levelText = t['results.level.high'];
-				resultLevel.textContent = levelText;
-				cardResultLevel.textContent = levelText;
-				resultInterpretation.textContent = t['results.interpretation.high'];
-				resultLevel.style.color = 'var(--pico-primary)';
-			} else {
-				const levelText = t['results.level.low'];
-				resultLevel.textContent = levelText;
-				cardResultLevel.textContent = levelText;
-				resultInterpretation.textContent = t['results.interpretation.low'];
-				resultLevel.style.color = 'inherit';
-			}
-
-			// Update Share Card Part A
-			cardScoreA.textContent = `${partAScore}/6`;
+			const levelText = partAScore >= 4 ? t['results.level.high'] : t['results.level.low'];
+			resultLevel.textContent = levelText;
+			shareResultLevel.textContent = levelText;
+			resultInterpretation.textContent = partAScore >= 4 ? t['results.interpretation.high'] : t['results.interpretation.low'];
+			resultLevel.style.color = partAScore >= 4 ? 'var(--pico-primary)' : 'inherit';
+			
+			shareScoreA.textContent = `${partAScore}/6`;
 
 			modal.showModal();
 		});
 
-		// Share Image Logic (Summary)
 		shareBtn?.addEventListener('click', async () => {
-			await generateImage();
-		});
-
-		// Download PDF Logic (Detailed)
-		shareDetailedBtn?.addEventListener('click', async () => {
-			await generatePDF();
-		});
-
-		async function generatePDF() {
-			const originalText = shareDetailedBtn.textContent;
-			shareDetailedBtn.textContent = '...';
-			shareDetailedBtn.disabled = true;
-
-			try {
-				const { jsPDF } = window.jspdf;
-				const doc = new jsPDF();
-				const margin = 20;
-				let y = margin;
-
-				// Header
-				doc.setFontSize(22);
-				doc.setTextColor(59, 130, 246);
-				doc.text('ASRS-18 Clinical Report', margin, y);
-				y += 10;
-				
-				doc.setFontSize(12);
-				doc.setTextColor(100, 116, 139);
-				doc.text('Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist', margin, y);
-				y += 15;
-
-				// Scores Section
-				const formData = new FormData(form);
-				let partAScore = 0;
-				let partBScore = 0;
-				const tableData = [];
-				const optionLabels = [
-					t['options.never'],
-					t['options.rarely'],
-					t['options.sometimes'],
-					t['options.often'],
-					t['options.veryOften']
-				];
-
-				for (let i = 0; i < 18; i++) {
-					const value = formData.get(`q${i}`);
-					const responseLabel = value !== null ? optionLabels[parseInt(value.toString())] : '-';
-					
-					if (value !== null) {
-						const numericValue = parseInt(value.toString());
-						if (numericValue >= shadedThresholds[i]) {
-							if (i < 6) partAScore++;
-							else partBScore++;
-						}
-					}
-					
-					tableData.push([i + 1, localeQuestions[i], responseLabel]);
-				}
-
-				// Summary Box
-				doc.setDrawColor(59, 130, 246);
-				doc.setFillColor(248, 250, 252);
-				doc.rect(margin, y, 170, 40, 'FD');
-				
-				doc.setFontSize(14);
-				doc.setTextColor(30, 41, 59);
-				doc.setFont(undefined, 'bold');
-				doc.text(t['results.title'], margin + 10, y + 15);
-				
-				doc.setFontSize(11);
-				doc.setFont(undefined, 'normal');
-				doc.text(t['results.score_info'].replace('{score}', partAScore.toString()), margin + 10, y + 25);
-				doc.text(t['results.score_info_partB'].replace('{score}', partBScore.toString()), margin + 10, y + 32);
-				
-				const levelText = partAScore >= 4 ? t['results.level.high'] : t['results.level.low'];
-				doc.setTextColor(partAScore >= 4 ? 37 : 30, partAScore >= 4 ? 99 : 41, partAScore >= 4 ? 235 : 59);
-				doc.setFont(undefined, 'bold');
-				doc.text(levelText, 180, y + 25, { align: 'right' });
-				
-				y += 55;
-
-				// Table
-				doc.autoTable({
-					startY: y,
-					head: [[ '#', t['report.question'], t['report.response'] ]],
-					body: tableData,
-					headStyles: { fillColor: [59, 130, 246] },
-					columnStyles: {
-						0: { cellWidth: 10 },
-						2: { cellWidth: 40, fontStyle: 'bold' }
-					},
-					margin: { left: margin, right: margin }
-				});
-
-				// Footer
-				const finalY = doc.lastAutoTable.finalY + 20;
-				doc.setFontSize(10);
-				doc.setTextColor(148, 163, 184);
-				doc.setFont(undefined, 'italic');
-				doc.text(t['results.disclaimer'], margin, finalY, { maxWidth: 170 });
-				
-				doc.setFont(undefined, 'normal');
-				doc.text(`${t['report.check_at']} asrs18.com`, 105, 285, { align: 'center' });
-
-				doc.save(`asrs18-report-${lang}.pdf`);
-			} catch (err) {
-				console.error('Error generating PDF:', err);
-			} finally {
-				shareDetailedBtn.textContent = originalText;
-				shareDetailedBtn.disabled = false;
-			}
-		}
-
-		async function generateImage() {
 			const originalText = shareBtn.textContent;
 			shareBtn.textContent = '...';
 			shareBtn.disabled = true;
 
 			try {
 				const card = document.getElementById('share-card');
-				
-				card.classList.add('summary-mode');
-				document.getElementById('card-detailed-content').style.display = 'none';
-				card.style.height = '1920px';
-
 				const canvas = await html2canvas(card, {
 					scale: 2, 
 					useCORS: true,
@@ -630,548 +467,176 @@ const localeExamples = examples[lang];
 				shareBtn.textContent = originalText;
 				shareBtn.disabled = false;
 			}
-		}
-
-		closeModal?.addEventListener('click', () => {
-			modal.close();
 		});
 
-		// Close modal on click outside
-		modal?.addEventListener('click', (e) => {
-			if (e.target === modal) modal.close();
+		shareDetailedBtn?.addEventListener('click', async () => {
+			const originalText = shareDetailedBtn.textContent;
+			shareDetailedBtn.textContent = '...';
+			shareDetailedBtn.disabled = true;
+
+			try {
+				const { jsPDF } = window.jspdf;
+				const doc = new jsPDF();
+				const margin = 20;
+				let y = margin;
+
+				doc.setFontSize(22);
+				doc.setTextColor(59, 130, 246);
+				doc.text('ASRS-18 Clinical Report', margin, y);
+				y += 10;
+				
+				doc.setFontSize(12);
+				doc.setTextColor(100, 116, 139);
+				doc.text('Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist', margin, y);
+				y += 15;
+
+				const formData = new FormData(form);
+				let partAScore = 0;
+				let partBScore = 0;
+				const tableData = [];
+				const optionLabels = [t['options.never'], t['options.rarely'], t['options.sometimes'], t['options.often'], t['options.veryOften']];
+
+				for (let i = 0; i < 18; i++) {
+					const value = formData.get(`q${i}`);
+					const responseLabel = value !== null ? optionLabels[parseInt(value.toString())] : '-';
+					if (value !== null) {
+						const numericValue = parseInt(value.toString());
+						if (numericValue >= shadedThresholds[i]) {
+							if (i < 6) partAScore++;
+							else partBScore++;
+						}
+					}
+					tableData.push([i + 1, localeQuestions[i], responseLabel]);
+				}
+
+				doc.setDrawColor(59, 130, 246);
+				doc.setFillColor(248, 250, 252);
+				doc.rect(margin, y, 170, 40, 'FD');
+				
+				doc.setFontSize(14);
+				doc.setTextColor(30, 41, 59);
+				doc.setFont(undefined, 'bold');
+				doc.text(t['results.title'], margin + 10, y + 15);
+				
+				doc.setFontSize(11);
+				doc.setFont(undefined, 'normal');
+				doc.text(t['results.score_info'].replace('{score}', partAScore.toString()), margin + 10, y + 25);
+				doc.text(t['results.score_info_partB'].replace('{score}', partBScore.toString()), margin + 10, y + 32);
+				
+				const levelText = partAScore >= 4 ? t['results.level.high'] : t['results.level.low'];
+				doc.setTextColor(partAScore >= 4 ? 37 : 30, partAScore >= 4 ? 99 : 41, partAScore >= 4 ? 235 : 59);
+				doc.setFont(undefined, 'bold');
+				doc.text(levelText, 180, y + 25, { align: 'right' });
+				
+				y += 55;
+
+				doc.autoTable({
+					startY: y,
+					head: [[ '#', t['report.question'], t['report.response'] ]],
+					body: tableData,
+					headStyles: { fillColor: [59, 130, 246] },
+					columnStyles: { 0: { cellWidth: 10 }, 2: { cellWidth: 40, fontStyle: 'bold' } },
+					margin: { left: margin, right: margin }
+				});
+
+				const finalY = doc.lastAutoTable.finalY + 20;
+				doc.setFontSize(10);
+				doc.setTextColor(148, 163, 184);
+				doc.setFont(undefined, 'italic');
+				doc.text(t['results.disclaimer'], margin, finalY, { maxWidth: 170 });
+				
+				doc.setFont(undefined, 'normal');
+				doc.text(`${t['report.check_at']} asrs18.com`, 105, 285, { align: 'center' });
+
+				doc.save(`asrs18-report-${lang}.pdf`);
+			} catch (err) {
+				console.error('Error generating PDF:', err);
+			} finally {
+				shareDetailedBtn.textContent = originalText;
+				shareDetailedBtn.disabled = false;
+			}
 		});
+
+		closeModal?.addEventListener('click', () => { modal.close(); });
+		modal?.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
 	</script>
 
 	<style>
-		.intro-text {
-			font-style: italic;
-			color: var(--pico-muted-color);
-			margin-bottom: 0.5rem;
-		}
-		.time-estimate {
-			font-size: 0.85rem;
-			color: var(--pico-muted-color);
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			margin-bottom: 2rem;
-		}
-		.progress-container {
-			position: sticky;
-			top: 0;
-			z-index: 100;
-			background: var(--pico-background-color);
-			padding: 1rem 0;
-			margin-bottom: 2rem;
-			border-bottom: 1px solid var(--pico-muted-border-color);
-			display: flex;
-			flex-direction: column;
-			gap: 0.5rem;
-		}
-		#clear-progress {
-			align-self: flex-end;
-			width: auto;
-			padding: 0.25rem 0.75rem;
-			font-size: 0.7rem;
-			margin-bottom: 0;
-		}
-		.progress-header {
-			display: flex;
-			justify-content: space-between;
-			font-size: 0.8rem;
-			font-weight: bold;
-			margin-bottom: 0.5rem;
-			color: var(--pico-muted-color);
-		}
-		progress {
-			margin-bottom: 0;
-			height: 0.5rem;
-		}
-		.question-container {
-			margin-bottom: 4rem;
-			padding: 1.5rem;
-			background: var(--pico-card-background-color);
-			border-radius: var(--pico-border-radius);
-			border: 1px solid var(--pico-muted-border-color);
-			transition: all 0.3s ease;
-			opacity: 0.5;
-			scroll-margin-top: 10rem;
-		}
-		.question-container.active {
-			opacity: 1;
-			border-color: var(--pico-primary);
-			box-shadow: 0 0 0 1px var(--pico-primary);
-		}
-		.question-text {
-			font-size: 1.1rem;
-			font-weight: 600;
-			margin-bottom: 1rem;
-		}
-		.question-number {
-			color: var(--pico-primary);
-			margin-right: 0.5rem;
-		}
-		.part-header {
-			margin-bottom: 2rem;
-			border-bottom: 2px solid var(--pico-primary);
-			display: inline-block;
-		}
-		.part-header h3 {
-			margin-bottom: 0.5rem;
-			font-size: 1.25rem;
-			color: var(--pico-primary);
-		}
-		.example-details {
-			border: none;
-			padding: 0;
-			margin: -0.5rem 0 1rem 1.5rem;
-			background: none;
-		}
-		.example-details summary {
-			font-size: 0.8rem;
-			color: var(--pico-primary);
-			text-decoration: underline;
-			cursor: pointer;
-			list-style: none;
-			display: inline-flex;
-			align-items: center;
-			gap: 0.25rem;
-		}
-		.example-details summary::-webkit-details-marker {
-			display: none;
-		}
-		.example-text {
-			font-size: 0.85rem;
-			color: var(--pico-muted-color);
-			margin-top: 0.5rem;
-			margin-bottom: 0;
-			padding: 0.5rem 1rem;
-			background: var(--pico-secondary-background);
-			border-radius: var(--pico-border-radius);
-			border-left: 3px solid var(--pico-primary);
-		}
-		fieldset {
-			border: none;
-			padding: 0;
-			margin: 0;
-		}
-		.options-grid {
-			display: flex;
-			flex-wrap: nowrap;
-			gap: 0;
-			border: 1px solid var(--pico-muted-border-color);
-			border-radius: var(--pico-border-radius);
-			overflow: hidden;
-			margin-bottom: var(--pico-spacing);
-			padding: 0;
-		}
-		.options-grid label {
-			flex: 1 1 0;
-			width: 20%;
-			margin: 0 !important;
-			padding: 0 !important;
-			display: flex;
-		}
-		@media (max-width: 800px) {
-			.options-grid {
-				flex-direction: column;
-			}
-			.options-grid label {
-				width: 100%;
-			}
-		}
-		.option-label {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 100%;
-			min-height: 4rem;
-			padding: 0.5rem;
-			text-align: center;
-			background: var(--pico-secondary-background);
-			border: none;
-			border-right: 1px solid var(--pico-muted-border-color);
-			border-bottom: 1px solid var(--pico-muted-border-color);
-			border-radius: 0;
-			cursor: pointer;
-			transition: all 0.2s ease;
-			font-size: 0.85rem;
-			margin: 0;
-			line-height: 1.2;
-			overflow-wrap: break-word;
-			hyphens: auto;
-		}
-		@media (min-width: 801px) {
-			.option-label {
-				border-bottom: none;
-			}
-			label:last-child .option-label {
-				border-right: none;
-			}
-		}
-		@media (max-width: 800px) {
-			.option-label {
-				border-right: none;
-			}
-			label:last-child .option-label {
-				border-bottom: none;
-			}
-		}
-		.option-label:hover {
-			background: var(--pico-secondary-hover-background);
-		}
-		.option-input {
-			position: absolute;
-			opacity: 0;
-			width: 0;
-			height: 0;
-		}
-		.option-input:checked + .option-label {
-			background: var(--pico-primary-background);
-			color: var(--pico-primary-inverse);
-			border-color: var(--pico-primary-border);
-		}
-		.option-input:focus-visible + .option-label {
-			outline: 2px solid var(--pico-primary);
-			outline-offset: 2px;
-		}
-		.option-help {
-			margin-top: 0.75rem;
-			font-size: 0.85rem;
-			color: var(--pico-primary);
-			font-style: italic;
-			min-height: 1.2rem;
-			transition: opacity 0.3s ease;
-			opacity: 0;
-			text-align: center;
-		}
-		.option-help.visible {
-			opacity: 1;
-		}
-		#part-b-details {
-			border: none;
-			padding: 0;
-			margin: 2rem 0;
-			background: none;
-		}
-		.part-b-toggle {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 1rem;
-			padding: 1.5rem;
-			background: var(--pico-secondary-background);
-			color: var(--pico-primary);
-			border-radius: var(--pico-border-radius);
-			border: 2px solid var(--pico-muted-border-color);
-			font-weight: 800;
-			text-transform: uppercase;
-			letter-spacing: 0.1rem;
-			cursor: pointer;
-			transition: all 0.2s ease;
-			list-style: none;
-		}
-		.part-b-toggle::after {
-			display: none !important;
-		}
-		.part-b-toggle::-webkit-details-marker,
-		.part-b-toggle::marker {
-			display: none !important;
-			content: "";
-		}
-		.part-b-toggle:hover {
-			border-color: var(--pico-primary);
-			background: var(--pico-secondary-hover-background);
-		}
-		.part-b-toggle .chevron {
-			transition: transform 0.3s ease;
-		}
-		#part-b-details[open] .part-b-toggle {
-			margin-bottom: 2rem;
-			border-color: var(--pico-primary);
-		}
-		#part-b-details[open] .part-b-toggle .chevron {
-			transform: rotate(180deg);
-		}
-		#completion-zone {
-			scroll-margin-top: 10rem;
-		}
-		.part-b-intro {
-			padding: 1.5rem;
-			background: var(--pico-card-background-color);
-			border-left: 4px solid var(--pico-primary);
-			border-radius: var(--pico-border-radius);
-			margin-bottom: 2rem;
-			font-style: italic;
-		}
-		.part-b-intro p {
-			margin-bottom: 0;
-		}
-		.result-scores {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-			gap: 1rem;
-			margin: 1.5rem 0;
-		}
-		.score-card {
-			background: var(--pico-secondary-background);
-			padding: 1rem;
-			border-radius: var(--pico-border-radius);
-			text-align: center;
-		}
-		.score-card h5 {
-			margin-bottom: 0.5rem;
-			font-size: 0.9rem;
-			color: var(--pico-muted-color);
-		}
-		.score-card p {
-			margin-bottom: 0;
-			font-weight: bold;
-		}
-		#result-level {
-			text-align: center;
-			margin-bottom: 0.5rem;
-		}
-		.modal-footer-btns {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 1rem;
-			margin-top: 1rem;
-		}
-		@media (max-width: 800px) {
-			.modal-footer-btns {
-				grid-template-columns: 1fr;
-			}
-		}
-		
-		#result-interpretation {
-			font-size: 0.95rem;
-			line-height: 1.5;
-			border-top: 1px solid var(--pico-muted-border-color);
-			padding-top: 1rem;
-			margin-bottom: 1.5rem;
-		}
-		
+		.intro-text { font-style: italic; color: var(--pico-muted-color); margin-bottom: 0.5rem; }
+		.time-estimate { font-size: 0.85rem; color: var(--pico-muted-color); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; }
+		.progress-container { position: sticky; top: 0; z-index: 100; background: var(--pico-background-color); padding: 1rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--pico-muted-border-color); display: flex; flex-direction: column; gap: 0.5rem; }
+		#clear-progress { align-self: flex-end; width: auto; padding: 0.25rem 0.75rem; font-size: 0.7rem; margin-bottom: 0; }
+		.progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--pico-muted-color); }
+		progress { margin-bottom: 0; height: 0.5rem; }
+		.question-container { margin-bottom: 4rem; padding: 1.5rem; background: var(--pico-card-background-color); border-radius: var(--pico-border-radius); border: 1px solid var(--pico-muted-border-color); transition: all 0.3s ease; opacity: 0.5; scroll-margin-top: 10rem; }
+		.question-container.active { opacity: 1; border-color: var(--pico-primary); box-shadow: 0 0 0 1px var(--pico-primary); }
+		.question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+		.question-number { color: var(--pico-primary); margin-right: 0.5rem; }
+		.part-header { margin-bottom: 2rem; border-bottom: 2px solid var(--pico-primary); display: inline-block; }
+		.part-header h3 { margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--pico-primary); }
+		.example-details { border: none; padding: 0; margin: -0.5rem 0 1rem 1.5rem; background: none; }
+		.example-details summary { font-size: 0.8rem; color: var(--pico-primary); text-decoration: underline; cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 0.25rem; }
+		.example-details summary::-webkit-details-marker { display: none; }
+		.example-text { font-size: 0.85rem; color: var(--pico-muted-color); margin-top: 0.5rem; margin-bottom: 0; padding: 0.5rem 1rem; background: var(--pico-secondary-background); border-radius: var(--pico-border-radius); border-left: 3px solid var(--pico-primary); }
+		fieldset { border: none; padding: 0; margin: 0; }
+		.options-grid { display: flex; flex-wrap: nowrap; gap: 0; border: 1px solid var(--pico-muted-border-color); border-radius: var(--pico-border-radius); overflow: hidden; margin-bottom: var(--pico-spacing); padding: 0; }
+		.options-grid label { flex: 1 1 0; width: 20%; margin: 0 !important; padding: 0 !important; display: flex; }
+		@media (max-width: 800px) { .options-grid { flex-direction: column; } .options-grid label { width: 100%; } }
+		.option-label { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 4rem; padding: 0.5rem; text-align: center; background: var(--pico-secondary-background); border: none; border-right: 1px solid var(--pico-muted-border-color); border-bottom: 1px solid var(--pico-muted-border-color); border-radius: 0; cursor: pointer; transition: all 0.2s ease; font-size: 0.85rem; margin: 0; line-height: 1.2; overflow-wrap: break-word; hyphens: auto; }
+		@media (min-width: 801px) { .option-label { border-bottom: none; } label:last-child .option-label { border-right: none; } }
+		@media (max-width: 800px) { .option-label { border-right: none; } label:last-child .option-label { border-bottom: none; } }
+		.option-label:hover { background: var(--pico-secondary-hover-background); }
+		.option-input { position: absolute; opacity: 0; width: 0; height: 0; }
+		.option-input:checked + .option-label { background: var(--pico-primary-background); color: var(--pico-primary-inverse); border-color: var(--pico-primary-border); }
+		.option-input:focus-visible + .option-label { outline: 2px solid var(--pico-primary); outline-offset: 2px; }
+		.option-help { margin-top: 0.75rem; font-size: 0.85rem; color: var(--pico-primary); font-style: italic; min-height: 1.2rem; transition: opacity 0.3s ease; opacity: 0; text-align: center; }
+		.option-help.visible { opacity: 1; }
+		#part-b-details { border: none; padding: 0; margin: 2rem 0; background: none; }
+		.part-b-toggle { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1.5rem; background: var(--pico-secondary-background); color: var(--pico-primary); border-radius: var(--pico-border-radius); border: 2px solid var(--pico-muted-border-color); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1rem; cursor: pointer; transition: all 0.2s ease; list-style: none; }
+		.part-b-toggle::after { display: none !important; }
+		.part-b-toggle::-webkit-details-marker, .part-b-toggle::marker { display: none !important; content: ""; }
+		.part-b-toggle:hover { border-color: var(--pico-primary); background: var(--pico-secondary-hover-background); }
+		.part-b-toggle .chevron { transition: transform 0.3s ease; }
+		#part-b-details[open] .part-b-toggle { margin-bottom: 2rem; border-color: var(--pico-primary); }
+		#part-b-details[open] .part-b-toggle .chevron { transform: rotate(180deg); }
+		#completion-zone { scroll-margin-top: 10rem; }
+		.part-b-intro { padding: 1.5rem; background: var(--pico-card-background-color); border-left: 4px solid var(--pico-primary); border-radius: var(--pico-border-radius); margin-bottom: 2rem; font-style: italic; }
+		.part-b-intro p { margin-bottom: 0; }
+		.result-scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+		.score-card { background: var(--pico-secondary-background); padding: 1rem; border-radius: var(--pico-border-radius); text-align: center; }
+		.score-card h5 { margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--pico-muted-color); }
+		.score-card p { margin-bottom: 0; font-weight: bold; }
+		#result-level { text-align: center; margin-bottom: 0.5rem; }
+		.modal-footer-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+		@media (max-width: 800px) { .modal-footer-btns { grid-template-columns: 1fr; } }
+		#result-interpretation { font-size: 0.95rem; line-height: 1.5; border-top: 1px solid var(--pico-muted-border-color); padding-top: 1rem; margin-bottom: 1.5rem; }
+
 		/* Shareable Card Styles */
-		.share-card, .share-card * {
-			box-sizing: border-box;
-			margin: 0;
-			padding: 0;
-			border: none;
-			list-style: none;
-		}
-		.share-card {
-			width: 1080px;
-			height: 1920px;
-			background: #ffffff;
-			color: #1e293b;
-			display: flex;
-			flex-direction: column;
-			padding: 100px;
-			font-family: 'Inter', system-ui, -apple-system, sans-serif;
-			position: relative;
-			overflow: hidden;
-		}
-
-		.share-card.summary-mode {
-			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-			color: white;
-		}
-		.share-card .card-header {
-			text-align: center;
-			margin-bottom: 80px;
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-		.share-card .card-tag {
-			background: #3b82f6;
-			padding: 15px 40px;
-			border-radius: 50px;
-			font-size: 32px;
-			font-weight: 800;
-			text-transform: uppercase;
-			letter-spacing: 4px;
-			color: white;
-		}
-		.share-card .card-title {
-			font-size: 160px;
-			margin-top: 40px;
-			margin-bottom: 10px;
-			color: inherit;
-			line-height: 1;
-			font-weight: 900;
-			text-align: center;
-			width: 100%;
-		}
-		.share-card .card-subtitle {
-			font-size: 56px;
-			opacity: 0.7;
-			text-align: center;
-		}
-		.share-card .card-body {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: center;
-			width: 100%;
-			padding: 0 100px;
-			gap: 80px;
-		}
-		.share-card.summary-mode .card-body {
-			justify-content: center;
-		}
-		.share-card .result-box {
-			background: #f8fafc;
-			border: 12px solid #3b82f6; /* Thicker border */
-			border-radius: 60px;
-			padding: 100px 80px; /* More padding */
-			text-align: center;
-			width: 100%;
-			margin: 0 !important;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-		}
-		.summary-mode .result-box {
-			background: rgba(255, 255, 255, 0.1); /* Slightly more opaque */
-			border-color: #60a5fa;
-		}
-		.share-card .result-level-text {
-			font-size: 96px; /* Bigger */
-			color: #2563eb;
-			margin-bottom: 80px;
-			line-height: 1.1;
-			font-weight: 900;
-			text-align: center;
-		}
-		.summary-mode .result-level-text {
-			color: #ffffff; /* White for better contrast on dark bg */
-			text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-		}
-		.share-card .card-scores {
-			display: flex;
-			flex-direction: column;
-			gap: 40px;
-			width: 100%;
-		}
-		.share-card .card-score-item {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			border-bottom: 3px solid rgba(0, 0, 0, 0.1);
-			padding-bottom: 20px;
-		}
-		.summary-mode .card-score-item {
-			border-bottom: 3px solid rgba(255, 255, 255, 0.2);
-		}
-		.share-card .label {
-			font-size: 48px;
-			font-weight: 700;
-			opacity: 0.9;
-		}
-		.share-card .value {
-			font-size: 72px;
-			font-weight: 900;
-			color: #2563eb;
-		}
-		.summary-mode .value {
-			color: #60a5fa;
-		}
-		.share-card .card-disclaimer {
-			margin-top: 40px; /* Removed auto margin */
-			margin-bottom: 50px;
-			font-size: 32px;
-			opacity: 0.6;
-			text-align: center;
-			font-style: italic;
-			line-height: 1.4;
-		}
-		.share-card .card-footer {
-			margin-top: auto;
-			text-align: center;
-			width: 100%;
-			padding: 60px 0 0 0;
-			border-top: 4px solid rgba(59, 130, 246, 0.2);
-		}
-		.summary-mode .card-footer {
-			border-top: none;
-			margin-top: 100px;
-		}
-
-		.share-card .footer-note {
-			font-size: 36px;
-			opacity: 0.6;
-			margin-bottom: 15px;
-		}
-		.share-card .footer-domain {
-			font-size: 72px;
-			color: #3b82f6;
-			font-weight: 900;
-		}
-
-		/* Detailed Report Specifics */
-		.detailed-header {
-			font-size: 52px;
-			color: #1e293b;
-			margin: 40px 0 40px 0;
-			text-transform: uppercase;
-			letter-spacing: 4px;
-			font-weight: 900;
-			width: 100%;
-			text-align: left;
-			border-left: 15px solid #3b82f6;
-			padding-left: 30px;
-		}
-		.symptom-list {
-			display: flex;
-			flex-direction: column;
-			gap: 25px;
-			width: 100%;
-			padding: 0;
-		}
-		.symptom-item {
-			display: flex;
-			gap: 30px;
-			align-items: center;
-			background: #f1f5f9;
-			padding: 30px 40px;
-			border-radius: 25px;
-		}
-		.symptom-bullet {
-			color: #3b82f6;
-			font-weight: 900;
-			font-size: 60px;
-			line-height: 1;
-		}
-		.symptom-text {
-			font-size: 38px;
-			line-height: 1.3;
-			color: #334155;
-			font-weight: 600;
-			flex: 1;
-		}
-
-		.practitioner-note {
-			display: flex;
-			gap: 0.75rem;
-			align-items: flex-start;
-			padding: 1rem;
-			background: var(--pico-ins-color);
-			color: var(--pico-primary-inverse);
-			border-radius: var(--pico-border-radius);
-			margin-bottom: 0;
-		}
-		.practitioner-note svg {
-			flex-shrink: 0;
-			margin-top: 0.1rem;
-		}
-		.practitioner-note small {
-			line-height: 1.4;
-			font-weight: 500;
-		}
+		.share-card, .share-card * { box-sizing: border-box; margin: 0; padding: 0; border: none; list-style: none; }
+		.share-card { width: 1080px; height: 1920px; background: #ffffff; color: #1e293b; display: flex; flex-direction: column; padding: 100px; font-family: 'Inter', system-ui, -apple-system, sans-serif; position: relative; overflow: hidden; }
+		.share-card.summary-mode { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white !important; }
+		.share-card .card-header { text-align: center; margin-bottom: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+		.share-card .card-tag { background: #3b82f6; padding: 12px 40px; border-radius: 50px; font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; color: white; }
+		.share-card .card-title { font-size: 150px; margin-top: 30px; margin-bottom: 5px; color: inherit; line-height: 1; font-weight: 900; text-align: center; width: 100%; }
+		.share-card .card-subtitle { font-size: 48px; opacity: 0.7; text-align: center; }
+		.share-card .card-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; gap: 50px; }
+		.share-card .result-box { background: #f8fafc; border: 10px solid #3b82f6; border-radius: 50px; padding: 70px 60px; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 !important; }
+		.summary-mode .result-box { background: rgba(255, 255, 255, 0.1); border-color: #60a5fa; }
+		.share-card .result-level-text { font-size: 80px; color: #2563eb; margin-bottom: 50px; line-height: 1.1; font-weight: 900; text-align: center; }
+		.summary-mode .result-level-text { color: #ffffff; }
+		.share-card .card-scores { display: flex; flex-direction: column; gap: 30px; width: 100%; }
+		.share-card .card-score-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0, 0, 0, 0.1); padding-bottom: 15px; }
+		.summary-mode .card-score-item { border-bottom: 2px solid rgba(255, 255, 255, 0.2); }
+		.share-card .label { font-size: 38px; font-weight: 600; opacity: 0.8; }
+		.share-card .value { font-size: 56px; font-weight: 900; color: #2563eb; }
+		.summary-mode .value { color: #60a5fa; }
+		.share-card .card-disclaimer { margin-top: 20px; font-size: 28px; opacity: 0.6; text-align: center; font-style: italic; line-height: 1.4; }
+		.share-card .card-footer { margin-top: auto; text-align: center; width: 100%; padding-top: 50px; border-top: 3px solid rgba(59, 130, 246, 0.2); }
+		.summary-mode .card-footer { border-top: none; }
+		.share-card .footer-note { font-size: 32px; opacity: 0.6; margin-bottom: 10px; }
+		.share-card .footer-domain { font-size: 64px; color: #3b82f6; font-weight: 900; }
+		.practitioner-note { display: flex; gap: 0.75rem; align-items: flex-start; padding: 1rem; background: var(--pico-ins-color); color: var(--pico-primary-inverse); border-radius: var(--pico-border-radius); margin-bottom: 0; }
+		.practitioner-note svg { flex-shrink: 0; margin-top: 0.1rem; }
+		.practitioner-note small { line-height: 1.4; font-weight: 500; }
 	</style>
 </Layout>
