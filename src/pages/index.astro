@@ -1,9 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
 ---
-
-<Layout title="ASRS-18 ADHD Self-Report" lang="en">
-	<h1>ASRS-18 Self-Report</h1>
-	<p>Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist</p>
-	<a href="/en/" role="button">Start Assessment</a>
-</Layout>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <script is:inline>
+      const lang = navigator.language.split('-')[0];
+      const supported = ['en', 'fr', 'es', 'it', 'pt'];
+      if (supported.includes(lang)) {
+        window.location.href = `/${lang}/`;
+      } else {
+        window.location.href = '/en/';
+      }
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to <a href="/en/">/en/</a>...</p>
+  </body>
+</html>
