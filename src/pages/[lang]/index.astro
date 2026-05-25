@@ -201,6 +201,7 @@ const localeExamples = examples[lang];
 		const progressContainerB = document.getElementById('progress-container-B');
 		const questions = document.querySelectorAll('.question-container');
 		const clearBtn = document.getElementById('clear-progress');
+		const partBDetails = document.getElementById('part-b-details');
 
 		// Clear Progress
 		clearBtn?.addEventListener('click', () => {
@@ -209,6 +210,13 @@ const localeExamples = examples[lang];
 					localStorage.removeItem(`asrs-${lang}-q${i}`);
 				}
 				window.location.reload();
+			}
+		});
+
+		// Auto-focus Part B on expand
+		partBDetails?.addEventListener('toggle', () => {
+			if (partBDetails.open && questions.length > 6) {
+				highlightQuestion(questions[6]);
 			}
 		});
 
