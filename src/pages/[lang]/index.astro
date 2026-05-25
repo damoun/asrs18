@@ -223,21 +223,24 @@ const localeExamples = examples[lang];
 			progressText.textContent = `${answered}/18`;
 		}
 
-		function highlightQuestion(el) {
+		function highlightQuestion(el, shouldScroll = true) {
 			questions.forEach(q => q.classList.remove('active'));
 			el.classList.add('active');
-			// Scroll into view smoothly if not visible
-			const rect = el.getBoundingClientRect();
-			if (rect.top < 0 || rect.bottom > window.innerHeight) {
-				el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			
+			if (shouldScroll) {
+				const rect = el.getBoundingClientRect();
+				if (rect.top < 0 || rect.bottom > window.innerHeight) {
+					el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				}
 			}
 		}
 
-		// Initial Highlight
-		if (questions.length > 0) highlightQuestion(questions[0]);
+		// Initial Highlight (no scroll on first load)
+		if (questions.length > 0) highlightQuestion(questions[0], false);
 
 		// Load Saved State
 		function loadSavedState() {
+			let lastAnsweredIndex = -1;
 			for (let i = 0; i < 18; i++) {
 				const savedValue = localStorage.getItem(`asrs-${lang}-q${i}`);
 				if (savedValue !== null) {
@@ -249,10 +252,19 @@ const localeExamples = examples[lang];
 							helpContainer.textContent = radio.dataset.description;
 							helpContainer.classList.add('visible');
 						}
+						lastAnsweredIndex = i;
 					}
 				}
 			}
+			
 			updateProgress();
+
+			// If user has progress, highlight the first unanswered question and scroll to it
+			if (lastAnsweredIndex !== -1 && lastAnsweredIndex < 17) {
+				highlightQuestion(questions[lastAnsweredIndex + 1], true);
+			} else if (lastAnsweredIndex === 17) {
+				highlightQuestion(questions[17], true);
+			}
 		}
 
 		loadSavedState();
