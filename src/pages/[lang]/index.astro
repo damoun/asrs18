@@ -23,7 +23,19 @@ const localeExamples = examples[lang];
 		<hgroup>
 			<h2>{t['site.title']}</h2>
 			<p class="intro-text">{t['assessment.instructions']}</p>
+			<p class="time-estimate">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				{t['assessment.time_estimate']}
+			</p>
 		</hgroup>
+
+		<div class="progress-container">
+			<div class="progress-header">
+				<span>{t['assessment.progress']}</span>
+				<span id="progress-text">0/18</span>
+			</div>
+			<progress id="assessment-progress" value="0" max="18"></progress>
+		</div>
 		
 		<form id="asrs-form">
 			<div class="part-header">
@@ -169,22 +181,81 @@ const localeExamples = examples[lang];
 		const resultScoreInfoA = document.getElementById('result-score-info-A');
 		const resultScoreInfoB = document.getElementById('result-score-info-B');
 		const resultInterpretation = document.getElementById('result-interpretation');
-		const cardPartB = document.getElementById('card-part-b');
 		const resultScores = document.querySelector('.result-scores');
+		const progressBar = document.getElementById('assessment-progress');
+		const progressText = document.getElementById('progress-text');
+		const questions = document.querySelectorAll('.question-container');
 
-		// Handle dynamic help text
+		// Handle dynamic help text and accessibility features
 		form?.addEventListener('change', (e) => {
 			const target = e.target;
 			if (target.classList.contains('option-input')) {
 				const name = target.name;
 				const description = target.dataset.description;
 				const helpContainer = document.getElementById(`help-${name}`);
+				
+				// Update Help Text
 				if (helpContainer) {
 					helpContainer.textContent = description;
 					helpContainer.classList.add('visible');
 				}
+
+				// Auto-save to LocalStorage
+				const value = target.value;
+				localStorage.setItem(`asrs-${lang}-${name}`, value);
+
+				// Update Progress
+				updateProgress();
+
+				// Focus Mode: Highlight next question
+				const currentQ = target.closest('.question-container');
+				const nextQ = currentQ.nextElementSibling;
+				if (nextQ && nextQ.classList.contains('question-container')) {
+					highlightQuestion(nextQ);
+				}
 			}
 		});
+
+		function updateProgress() {
+			const formData = new FormData(form);
+			const answered = Array.from(formData.keys()).filter(key => key.startsWith('q')).length;
+			progressBar.value = answered;
+			progressText.textContent = `${answered}/18`;
+		}
+
+		function highlightQuestion(el) {
+			questions.forEach(q => q.classList.remove('active'));
+			el.classList.add('active');
+			// Scroll into view smoothly if not visible
+			const rect = el.getBoundingClientRect();
+			if (rect.top < 0 || rect.bottom > window.innerHeight) {
+				el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+		}
+
+		// Initial Highlight
+		if (questions.length > 0) highlightQuestion(questions[0]);
+
+		// Load Saved State
+		function loadSavedState() {
+			for (let i = 0; i < 18; i++) {
+				const savedValue = localStorage.getItem(`asrs-${lang}-q${i}`);
+				if (savedValue !== null) {
+					const radio = form.querySelector(`input[name="q${i}"][value="${savedValue}"]`);
+					if (radio) {
+						radio.checked = true;
+						const helpContainer = document.getElementById(`help-q${i}`);
+						if (helpContainer) {
+							helpContainer.textContent = radio.dataset.description;
+							helpContainer.classList.add('visible');
+						}
+					}
+				}
+			}
+			updateProgress();
+		}
+
+		loadSavedState();
 
 		// ASRS v1.1 Shaded Boxes Logic
 		// Part A: Q1-Q3 (Sometimes, Often, Very Often), Q4-Q6 (Often, Very Often)
@@ -259,7 +330,36 @@ const localeExamples = examples[lang];
 		.intro-text {
 			font-style: italic;
 			color: var(--pico-muted-color);
-			margin-bottom: 3rem;
+			margin-bottom: 0.5rem;
+		}
+		.time-estimate {
+			font-size: 0.85rem;
+			color: var(--pico-muted-color);
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin-bottom: 2rem;
+		}
+		.progress-container {
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			background: var(--pico-background-color);
+			padding: 1rem 0;
+			margin-bottom: 2rem;
+			border-bottom: 1px solid var(--pico-muted-border-color);
+		}
+		.progress-header {
+			display: flex;
+			justify-content: space-between;
+			font-size: 0.8rem;
+			font-weight: bold;
+			margin-bottom: 0.5rem;
+			color: var(--pico-muted-color);
+		}
+		progress {
+			margin-bottom: 0;
+			height: 0.5rem;
 		}
 		.question-container {
 			margin-bottom: 4rem;
@@ -267,6 +367,13 @@ const localeExamples = examples[lang];
 			background: var(--pico-card-background-color);
 			border-radius: var(--pico-border-radius);
 			border: 1px solid var(--pico-muted-border-color);
+			transition: all 0.3s ease;
+			opacity: 0.5;
+		}
+		.question-container.active {
+			opacity: 1;
+			border-color: var(--pico-primary);
+			box-shadow: 0 0 0 1px var(--pico-primary);
 		}
 		.question-text {
 			font-size: 1.1rem;
