@@ -236,8 +236,20 @@ const localeExamples = examples[lang];
 	</script>
 
 	<!-- jsPDF and AutoTable via Bunny CDN (hopjs) -->
-	<script src="https://cdn.hopjs.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" is:inline></script>
-	<script src="https://cdn.hopjs.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js" is:inline></script>
+	<script 
+		type="text/javascript" 
+		src="https://cdn.hopjs.net/npm/jspdf@4.1.0/dist/jspdf.umd.min.js" 
+		crossorigin="anonymous" 
+		referrerpolicy="no-referrer"
+		is:inline>
+	</script>
+	<script 
+		type="text/javascript" 
+		src="https://cdn.hopjs.net/npm/jspdf-autotable@5.0.2/dist/jspdf.plugin.autotable.js" 
+		crossorigin="anonymous" 
+		referrerpolicy="no-referrer"
+		is:inline>
+	</script>
 
 	<script is:inline define:vars={{ lang, t, localeQuestions }}>
 		const form = document.getElementById('asrs-form');
