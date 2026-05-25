@@ -116,6 +116,11 @@ const localeQuestions = questions[lang];
 			grid-template-columns: repeat(5, 1fr);
 			gap: 0.5rem;
 		}
+		@media (max-width: 600px) {
+			.grid {
+				grid-template-columns: 1fr;
+			}
+		}
 		.option-label {
 			display: flex;
 			align-items: center;
