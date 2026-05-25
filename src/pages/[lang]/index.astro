@@ -254,7 +254,7 @@ const localeExamples = examples[lang];
 		clearBtn?.addEventListener('click', () => {
 			if (confirm(t['assessment.clear_confirm'])) {
 				for (let i = 0; i < 18; i++) {
-					localStorage.removeItem(`asrs-${lang}-q${i}`);
+					localStorage.removeItem(`asrs-q${i}`);
 				}
 				window.location.reload();
 			}
@@ -283,7 +283,7 @@ const localeExamples = examples[lang];
 
 				// Auto-save to LocalStorage
 				const value = target.value;
-				localStorage.setItem(`asrs-${lang}-${name}`, value);
+				localStorage.setItem(`asrs-${name}`, value);
 
 				// Update Progress
 				updateProgress();
@@ -354,7 +354,7 @@ const localeExamples = examples[lang];
 		function loadSavedState() {
 			let lastAnsweredIndex = -1;
 			for (let i = 0; i < 18; i++) {
-				const savedValue = localStorage.getItem(`asrs-${lang}-q${i}`);
+				const savedValue = localStorage.getItem(`asrs-q${i}`);
 				if (savedValue !== null) {
 					const radio = form.querySelector(`input[name="q${i}"][value="${savedValue}"]`);
 					if (radio) {
