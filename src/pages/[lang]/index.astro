@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { ui, questions, type Language } from '../../data/i18n';
+import { ui, questions, examples, type Language } from '../../data/i18n';
 
 export function getStaticPaths() {
   return [
@@ -15,6 +15,7 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Language };
 const t = ui[lang];
 const localeQuestions = questions[lang];
+const localeExamples = examples[lang];
 ---
 
 <Layout title={t['site.title']} description={t['site.description']} lang={lang}>
@@ -32,9 +33,15 @@ const localeQuestions = questions[lang];
 			{/* Part A: Mandatory Screening */}
 			{localeQuestions.slice(0, 6).map((question, index) => (
 				<div class="question-container" data-index={index}>
-					<p class="question-text">
-						<span class="question-number">{index + 1}.</span> {question}
-					</p>
+					<div class="question-header">
+						<p class="question-text">
+							<span class="question-number">{index + 1}.</span> {question}
+						</p>
+						<details class="example-details">
+							<summary>{t['assessment.show_examples']}</summary>
+							<p class="example-text">{localeExamples[index]}</p>
+						</details>
+					</div>
 					<fieldset>
 						<div class="grid">
 							<label>
@@ -78,9 +85,15 @@ const localeQuestions = questions[lang];
 					const actualIndex = index + 6;
 					return (
 						<div class="question-container" data-index={actualIndex}>
-							<p class="question-text">
-								<span class="question-number">{actualIndex + 1}.</span> {question}
-							</p>
+							<div class="question-header">
+								<p class="question-text">
+									<span class="question-number">{actualIndex + 1}.</span> {question}
+								</p>
+								<details class="example-details">
+									<summary>{t['assessment.show_examples']}</summary>
+									<p class="example-text">{localeExamples[actualIndex]}</p>
+								</details>
+							</div>
 							<fieldset>
 								<div class="grid">
 									<label>
@@ -273,6 +286,35 @@ const localeQuestions = questions[lang];
 			margin-bottom: 0.5rem;
 			font-size: 1.25rem;
 			color: var(--pico-primary);
+		}
+		.example-details {
+			border: none;
+			padding: 0;
+			margin: -0.5rem 0 1rem 1.5rem;
+			background: none;
+		}
+		.example-details summary {
+			font-size: 0.8rem;
+			color: var(--pico-primary);
+			text-decoration: underline;
+			cursor: pointer;
+			list-style: none;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.25rem;
+		}
+		.example-details summary::-webkit-details-marker {
+			display: none;
+		}
+		.example-text {
+			font-size: 0.85rem;
+			color: var(--pico-muted-color);
+			margin-top: 0.5rem;
+			margin-bottom: 0;
+			padding: 0.5rem 1rem;
+			background: var(--pico-secondary-background);
+			border-radius: var(--pico-border-radius);
+			border-left: 3px solid var(--pico-primary);
 		}
 		fieldset {
 			border: none;
