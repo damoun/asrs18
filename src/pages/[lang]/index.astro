@@ -119,6 +119,13 @@ const localeQuestions = questions[lang];
 			border: 1px solid var(--pico-muted-border-color);
 			border-radius: var(--pico-border-radius);
 			overflow: hidden;
+			margin-bottom: var(--pico-spacing);
+		}
+		.grid label {
+			margin: 0 !important;
+			padding: 0 !important;
+			display: flex;
+			flex-direction: column;
 		}
 		@media (max-width: 600px) {
 			.grid {
@@ -129,34 +136,40 @@ const localeQuestions = questions[lang];
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			height: 100%;
+			flex: 1;
 			padding: 0.75rem 0.25rem;
 			text-align: center;
 			background: var(--pico-secondary-background);
 			border: none;
 			border-right: 1px solid var(--pico-muted-border-color);
+			border-bottom: 1px solid var(--pico-muted-border-color);
 			border-radius: 0;
 			cursor: pointer;
 			transition: all 0.2s ease;
 			font-size: 0.85rem;
 			margin-bottom: 0;
+			min-height: 4rem;
+		}
+		@media (min-width: 601px) {
+			.option-label {
+				border-bottom: none;
+			}
+			label:last-child .option-label {
+				border-right: none;
+			}
 		}
 		@media (max-width: 600px) {
 			.option-label {
 				border-right: none;
-				border-bottom: 1px solid var(--pico-muted-border-color);
-				padding: 0.75rem 1rem;
 			}
 			label:last-child .option-label {
 				border-bottom: none;
 			}
 		}
-		label:last-child .option-label {
-			border-right: none;
-		}
 		.option-label:hover {
 			background: var(--pico-secondary-hover-background);
 		}
+
 		.option-label:hover {
 			background: var(--pico-secondary-hover-background);
 		}
