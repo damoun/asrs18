@@ -1,0 +1,112 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { ui, questions, type Language } from '../../data/i18n';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'es' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'pt' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Language };
+const t = ui[lang];
+const localeQuestions = questions[lang];
+---
+
+<Layout title={t['site.title']} description={t['site.description']} lang={lang}>
+	<section>
+		<h2>{t['site.title']}</h2>
+		<p>{t['assessment.instructions']}</p>
+		
+		<form id="asrs-form">
+			{localeQuestions.map((question, index) => (
+				<div class="question-container" data-index={index}>
+					<p><strong>{index + 1}. {question}</strong></p>
+					<fieldset>
+						<div class="grid">
+							<label>
+								<input type="radio" name={`q${index}`} value="0" required />
+								{t['options.never']}
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="1" />
+								{t['options.rarely']}
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="2" />
+								{t['options.sometimes']}
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="3" />
+								{t['options.often']}
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="4" />
+								{t['options.veryOften']}
+							</label>
+						</div>
+					</fieldset>
+					{index === 5 && <hr aria-label={t['assessment.partB']} />}
+				</div>
+			))}
+			
+			<button type="submit">{t['assessment.submit']}</button>
+		</form>
+	</section>
+
+	<dialog id="result-modal">
+		<article>
+			<header>
+				<button aria-label="Close" rel="prev" id="close-modal"></button>
+				<h3>{t['results.title']}</h3>
+			</header>
+			<div id="result-content">
+				<!-- Results will be injected here -->
+			</div>
+			<footer>
+				<p><small>{t['results.disclaimer']}</small></p>
+				<button id="share-button">Share Result</button>
+			</footer>
+		</article>
+	</dialog>
+
+	<style>
+		.question-container {
+			margin-bottom: 2rem;
+			padding-bottom: 1rem;
+			border-bottom: 1px solid var(--pico-muted-border-color);
+		}
+		.question-container:last-of-type {
+			border-bottom: none;
+		}
+		fieldset {
+			border: none;
+			padding: 0;
+			margin: 0;
+		}
+		.grid {
+			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		}
+		hr {
+			margin: 3rem 0;
+			border-top: 2px solid var(--pico-primary);
+		}
+		hr::before {
+			content: attr(aria-label);
+			display: block;
+			text-align: center;
+			margin-top: -1.25rem;
+			background: var(--pico-background-color);
+			width: fit-content;
+			margin-left: auto;
+			margin-right: auto;
+			padding: 0 1rem;
+			font-weight: bold;
+			color: var(--pico-primary);
+		}
+	</style>
+</Layout>
