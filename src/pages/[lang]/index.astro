@@ -37,28 +37,28 @@ const localeQuestions = questions[lang];
 					</p>
 					<fieldset>
 						<div class="grid">
-							<label data-tooltip={t['options.never.desc']}>
-								<input type="radio" name={`q${index}`} value="0" class="option-input" required />
+							<label>
+								<input type="radio" name={`q${index}`} value="0" class="option-input" required data-description={t['options.never.desc']} />
 								<span class="option-label">{t['options.never']}</span>
 							</label>
-							<label data-tooltip={t['options.rarely.desc']}>
-								<input type="radio" name={`q${index}`} value="1" class="option-input" />
+							<label>
+								<input type="radio" name={`q${index}`} value="1" class="option-input" data-description={t['options.rarely.desc']} />
 								<span class="option-label">{t['options.rarely']}</span>
 							</label>
-							<label data-tooltip={t['options.sometimes.desc']}>
-								<input type="radio" name={`q${index}`} value="2" class="option-input" />
+							<label>
+								<input type="radio" name={`q${index}`} value="2" class="option-input" data-description={t['options.sometimes.desc']} />
 								<span class="option-label">{t['options.sometimes']}</span>
 							</label>
-							<label data-tooltip={t['options.often.desc']}>
-								<input type="radio" name={`q${index}`} value="3" class="option-input" />
+							<label>
+								<input type="radio" name={`q${index}`} value="3" class="option-input" data-description={t['options.often.desc']} />
 								<span class="option-label">{t['options.often']}</span>
 							</label>
-							<label data-tooltip={t['options.veryOften.desc']}>
-								<input type="radio" name={`q${index}`} value="4" class="option-input" />
+							<label>
+								<input type="radio" name={`q${index}`} value="4" class="option-input" data-description={t['options.veryOften.desc']} />
 								<span class="option-label">{t['options.veryOften']}</span>
 							</label>
-
 						</div>
+						<div class="option-help" id={`help-q${index}`}>&nbsp;</div>
 					</fieldset>
 				</div>
 			))}
@@ -83,27 +83,28 @@ const localeQuestions = questions[lang];
 							</p>
 							<fieldset>
 								<div class="grid">
-									<label data-tooltip={t['options.never.desc']}>
-										<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" />
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" data-description={t['options.never.desc']} />
 										<span class="option-label">{t['options.never']}</span>
 									</label>
-									<label data-tooltip={t['options.rarely.desc']}>
-										<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" />
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" data-description={t['options.rarely.desc']} />
 										<span class="option-label">{t['options.rarely']}</span>
 									</label>
-									<label data-tooltip={t['options.sometimes.desc']}>
-										<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" />
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" data-description={t['options.sometimes.desc']} />
 										<span class="option-label">{t['options.sometimes']}</span>
 									</label>
-									<label data-tooltip={t['options.often.desc']}>
-										<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" />
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" data-description={t['options.often.desc']} />
 										<span class="option-label">{t['options.often']}</span>
 									</label>
-									<label data-tooltip={t['options.veryOften.desc']}>
-										<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" />
+									<label>
+										<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" data-description={t['options.veryOften.desc']} />
 										<span class="option-label">{t['options.veryOften']}</span>
 									</label>
 								</div>
+								<div class="option-help" id={`help-q${actualIndex}`}>&nbsp;</div>
 							</fieldset>
 						</div>
 					);
@@ -157,6 +158,20 @@ const localeQuestions = questions[lang];
 		const resultInterpretation = document.getElementById('result-interpretation');
 		const cardPartB = document.getElementById('card-part-b');
 		const resultScores = document.querySelector('.result-scores');
+
+		// Handle dynamic help text
+		form?.addEventListener('change', (e) => {
+			const target = e.target;
+			if (target.classList.contains('option-input')) {
+				const name = target.name;
+				const description = target.dataset.description;
+				const helpContainer = document.getElementById(`help-${name}`);
+				if (helpContainer) {
+					helpContainer.textContent = description;
+					helpContainer.classList.add('visible');
+				}
+			}
+		});
 
 		// ASRS v1.1 Shaded Boxes Logic
 		// Part A: Q1-Q3 (Sometimes, Often, Very Often), Q4-Q6 (Often, Very Often)
@@ -341,6 +356,19 @@ const localeQuestions = questions[lang];
 		.option-input:focus-visible + .option-label {
 			outline: 2px solid var(--pico-primary);
 			outline-offset: 2px;
+		}
+		.option-help {
+			margin-top: 0.75rem;
+			font-size: 0.85rem;
+			color: var(--pico-primary);
+			font-style: italic;
+			min-height: 1.2rem;
+			transition: opacity 0.3s ease;
+			opacity: 0;
+			text-align: center;
+		}
+		.option-help.visible {
+			opacity: 1;
 		}
 		#part-b-details {
 			border: none;
