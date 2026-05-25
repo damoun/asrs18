@@ -83,7 +83,7 @@ const languages = [
 				<ul>
 					<li>
 						<details class="dropdown">
-							<summary>{languages.find(l => l.code === lang)?.label || 'Language'}</summary>
+							<summary>{languages.find(l => l.code === lang)?.label || t['nav.language']}</summary>
 							<ul dir="rtl">
 								{languages.map((l) => (
 									<li><a href={`/${l.code}/`}>{l.label}</a></li>
@@ -93,7 +93,7 @@ const languages = [
 					</li>
 					<li>
 						<button id="font-toggle" class="outline secondary" size="small">
-							Dyslexic
+							{t['nav.dyslexic']}
 						</button>
 					</li>
 				</ul>

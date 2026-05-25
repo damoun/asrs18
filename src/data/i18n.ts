@@ -15,6 +15,9 @@ export const ui = {
     'results.title': 'Your Results',
     'results.score': 'Score',
     'results.disclaimer': 'This is a screening tool, not a diagnosis. Please consult a healthcare professional for a formal evaluation.',
+    'nav.language': 'Language',
+    'nav.dyslexic': 'Dyslexic',
+    'results.share': 'Share Result',
   },
   fr: {
     'site.title': 'Auto-évaluation ASRS-18 TDAH',
@@ -32,6 +35,9 @@ export const ui = {
     'results.title': 'Vos résultats',
     'results.score': 'Score',
     'results.disclaimer': 'Ceci est un outil de dépistage, pas un diagnostic. Veuillez consulter un professionnel de la santé pour une évaluation formelle.',
+    'nav.language': 'Langue',
+    'nav.dyslexic': 'Dyslexie',
+    'results.share': 'Partager le résultat',
   },
   es: {
     'site.title': 'Autoinforme ASRS-18 TDAH',
@@ -49,6 +55,9 @@ export const ui = {
     'results.title': 'Sus resultados',
     'results.score': 'Puntuación',
     'results.disclaimer': 'Esta es una herramienta de detección, no un diagnóstico. Por favor, consulte a un profesional de la salud para una evaluación formal.',
+    'nav.language': 'Idioma',
+    'nav.dyslexic': 'Dislexia',
+    'results.share': 'Compartir resultado',
   },
   it: {
     'site.title': 'Autovalutazione ASRS-18 ADHD',
@@ -66,6 +75,9 @@ export const ui = {
     'results.title': 'I tuoi risultati',
     'results.score': 'Punteggio',
     'results.disclaimer': 'Questo è uno strumento di screening, non una diagnosi. Consultare un professionista della salute per una valutazione formale.',
+    'nav.language': 'Lingua',
+    'nav.dyslexic': 'Dislessia',
+    'results.share': 'Condividi risultato',
   },
   pt: {
     'site.title': 'Auto-relato ASRS-18 TDAH',
@@ -83,6 +95,9 @@ export const ui = {
     'results.title': 'Seus resultados',
     'results.score': 'Pontuação',
     'results.disclaimer': 'Esta é uma ferramenta de triagem, não um diagnóstico. Por favor, consulte um profissional de saúde para uma avaliação formal.',
+    'nav.language': 'Idioma',
+    'nav.dyslexic': 'Dislexia',
+    'results.share': 'Compartilhar resultado',
   },
 } as const;
 
