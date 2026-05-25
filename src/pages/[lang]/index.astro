@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { ui, questions, type Language } from '../../data/i18n';
+import { ui, questions, examples, type Language } from '../../data/i18n';
 
 export function getStaticPaths() {
   return [
@@ -15,6 +15,7 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Language };
 const t = ui[lang];
 const localeQuestions = questions[lang];
+const localeExamples = examples[lang];
 ---
 
 <Layout title={t['site.title']} description={t['site.description']} lang={lang}>
@@ -22,50 +23,132 @@ const localeQuestions = questions[lang];
 		<hgroup>
 			<h2>{t['site.title']}</h2>
 			<p class="intro-text">{t['assessment.instructions']}</p>
+			<p class="time-estimate">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				{t['assessment.time_estimate']}
+			</p>
 		</hgroup>
+
+		<div class="progress-container">
+			<div class="progress-header">
+				<span>{t['results.partA.title']}</span>
+				<span id="progress-text-A">0/6</span>
+			</div>
+			<progress id="assessment-progress-A" value="0" max="6"></progress>
+			
+			<div id="progress-container-B" style="display: none; margin-top: 0.5rem;">
+				<div class="progress-header">
+					<span>{t['results.partB.title']}</span>
+					<span id="progress-text-B">0/12</span>
+				</div>
+				<progress id="assessment-progress-B" value="0" max="12" class="secondary"></progress>
+			</div>
+
+			<button id="clear-progress" class="outline secondary contrast smaller">{t['assessment.clear']}</button>
+		</div>
 		
 		<form id="asrs-form">
-			{localeQuestions.map((question, index) => (
-				<>
-					<div class="question-container" data-index={index}>
+			<div class="part-header">
+				<h3>{t['assessment.partA']}</h3>
+			</div>
+
+			{/* Part A: Mandatory Screening */}
+			{localeQuestions.slice(0, 6).map((question, index) => (
+				<div class="question-container" data-index={index}>
+					<div class="question-header">
 						<p class="question-text">
 							<span class="question-number">{index + 1}.</span> {question}
 						</p>
-						<fieldset>
-							<div class="grid">
-								<label>
-									<input type="radio" name={`q${index}`} value="0" class="option-input" required />
-									<span class="option-label">{t['options.never']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="1" class="option-input" />
-									<span class="option-label">{t['options.rarely']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="2" class="option-input" />
-									<span class="option-label">{t['options.sometimes']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="3" class="option-input" />
-									<span class="option-label">{t['options.often']}</span>
-								</label>
-								<label>
-									<input type="radio" name={`q${index}`} value="4" class="option-input" />
-									<span class="option-label">{t['options.veryOften']}</span>
-								</label>
-							</div>
-						</fieldset>
+						<details class="example-details">
+							<summary>{t['assessment.show_examples']}</summary>
+							<p class="example-text">{localeExamples[index]}</p>
+						</details>
 					</div>
-					{index === 5 && (
-						<div class="part-divider">
-							<hr />
-							<span>{t['assessment.partB']}</span>
+					<fieldset>
+						<div class="grid">
+							<label>
+								<input type="radio" name={`q${index}`} value="0" class="option-input" required data-description={t['options.never.desc']} />
+								<span class="option-label">{t['options.never']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="1" class="option-input" data-description={t['options.rarely.desc']} />
+								<span class="option-label">{t['options.rarely']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="2" class="option-input" data-description={t['options.sometimes.desc']} />
+								<span class="option-label">{t['options.sometimes']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="3" class="option-input" data-description={t['options.often.desc']} />
+								<span class="option-label">{t['options.often']}</span>
+							</label>
+							<label>
+								<input type="radio" name={`q${index}`} value="4" class="option-input" data-description={t['options.veryOften.desc']} />
+								<span class="option-label">{t['options.veryOften']}</span>
+							</label>
 						</div>
-					)}
-				</>
+						<div class="option-help" id={`help-q${index}`}>&nbsp;</div>
+					</fieldset>
+				</div>
 			))}
-			
-			<button type="submit">{t['assessment.submit']}</button>
+
+			<div id="completion-zone">
+				<div class="part-b-intro">
+					<p>{t['assessment.partB.description']}</p>
+				</div>
+
+				{/* Part B: Optional Frequency Details */}
+				<details id="part-b-details">
+					<summary class="part-b-toggle">
+						<span>{t['assessment.partB']}</span>
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+					</summary>
+					
+					{localeQuestions.slice(6).map((question, index) => {
+						const actualIndex = index + 6;
+						return (
+							<div class="question-container" data-index={actualIndex}>
+								<div class="question-header">
+									<p class="question-text">
+										<span class="question-number">{actualIndex + 1}.</span> {question}
+									</p>
+									<details class="example-details">
+										<summary>{t['assessment.show_examples']}</summary>
+										<p class="example-text">{localeExamples[actualIndex]}</p>
+									</details>
+								</div>
+								<fieldset>
+									<div class="grid">
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" data-description={t['options.never.desc']} />
+											<span class="option-label">{t['options.never']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" data-description={t['options.rarely.desc']} />
+											<span class="option-label">{t['options.rarely']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" data-description={t['options.sometimes.desc']} />
+											<span class="option-label">{t['options.sometimes']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" data-description={t['options.often.desc']} />
+											<span class="option-label">{t['options.often']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" data-description={t['options.veryOften.desc']} />
+											<span class="option-label">{t['options.veryOften']}</span>
+										</label>
+									</div>
+									<div class="option-help" id={`help-q${actualIndex}`}>&nbsp;</div>
+								</fieldset>
+							</div>
+						);
+					})}
+				</details>
+				
+				<button type="submit" id="submit-btn">{t['assessment.submit']}</button>
+			</div>
 		</form>
 	</section>
 
@@ -73,10 +156,25 @@ const localeQuestions = questions[lang];
 		<article>
 			<header>
 				<button aria-label="Close" rel="prev" id="close-modal"></button>
-				<h3>{t['results.title']}</h3>
+				<h3 id="result-title"></h3>
 			</header>
 			<div id="result-content">
-				<!-- Results will be injected here -->
+				<h4 id="result-level"></h4>
+				<div class="result-scores">
+					<div class="score-card" id="card-part-a">
+						<h5>{t['results.partA.title']}</h5>
+						<p id="result-score-info-A"></p>
+					</div>
+					<div class="score-card" id="card-part-b">
+						<h5>{t['results.partB.title']}</h5>
+						<p id="result-score-info-B"></p>
+					</div>
+				</div>
+				<p id="result-interpretation"></p>
+				<p class="practitioner-note">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+					<small>{t['results.practitioner_note']}</small>
+				</p>
 			</div>
 			<footer>
 				<p><small>{t['results.disclaimer']}</small></p>
@@ -85,18 +183,285 @@ const localeQuestions = questions[lang];
 		</article>
 	</dialog>
 
+	<script is:inline define:vars={{ lang, t }}>
+		const form = document.getElementById('asrs-form');
+		const modal = document.getElementById('result-modal');
+		const closeModal = document.getElementById('close-modal');
+		
+		const resultTitle = document.getElementById('result-title');
+		const resultLevel = document.getElementById('result-level');
+		const resultScoreInfoA = document.getElementById('result-score-info-A');
+		const resultScoreInfoB = document.getElementById('result-score-info-B');
+		const resultInterpretation = document.getElementById('result-interpretation');
+		const resultScores = document.querySelector('.result-scores');
+		const progressBarA = document.getElementById('assessment-progress-A');
+		const progressTextA = document.getElementById('progress-text-A');
+		const progressBarB = document.getElementById('assessment-progress-B');
+		const progressTextB = document.getElementById('progress-text-B');
+		const progressContainerB = document.getElementById('progress-container-B');
+		const questions = document.querySelectorAll('.question-container');
+		const clearBtn = document.getElementById('clear-progress');
+		const partBDetails = document.getElementById('part-b-details');
+
+		// Clear Progress
+		clearBtn?.addEventListener('click', () => {
+			if (confirm(t['assessment.clear_confirm'])) {
+				for (let i = 0; i < 18; i++) {
+					localStorage.removeItem(`asrs-${lang}-q${i}`);
+				}
+				window.location.reload();
+			}
+		});
+
+		// Auto-focus Part B on expand
+		partBDetails?.addEventListener('toggle', () => {
+			if (partBDetails.open && questions.length > 6) {
+				highlightQuestion(questions[6]);
+			}
+		});
+
+		// Handle dynamic help text and accessibility features
+		form?.addEventListener('change', (e) => {
+			const target = e.target;
+			if (target.classList.contains('option-input')) {
+				const name = target.name;
+				const description = target.dataset.description;
+				const helpContainer = document.getElementById(`help-${name}`);
+				
+				// Update Help Text
+				if (helpContainer) {
+					helpContainer.textContent = description;
+					helpContainer.classList.add('visible');
+				}
+
+				// Auto-save to LocalStorage
+				const value = target.value;
+				localStorage.setItem(`asrs-${lang}-${name}`, value);
+
+				// Update Progress
+				updateProgress();
+
+				// Focus Mode: Highlight next question or scroll to submit
+				const currentQ = target.closest('.question-container');
+				const currentIndex = parseInt(currentQ.dataset.index);
+				
+				if (currentIndex === 5) {
+					// End of Part A: Scroll to completion zone (Part B intro + Submit)
+					const completionZone = document.getElementById('completion-zone');
+					if (completionZone) {
+						completionZone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					}
+				} else {
+					const nextQ = currentQ.nextElementSibling;
+					if (nextQ && nextQ.classList.contains('question-container')) {
+						highlightQuestion(nextQ);
+					}
+				}
+			}
+		});
+
+		function updateProgress() {
+			const formData = new FormData(form);
+			const keys = Array.from(formData.keys()).filter(key => key.startsWith('q'));
+			
+			const answeredA = keys.filter(k => {
+				const index = parseInt(k.substring(1));
+				return index < 6;
+			}).length;
+			
+			const answeredB = keys.filter(k => {
+				const index = parseInt(k.substring(1));
+				return index >= 6;
+			}).length;
+
+			progressBarA.value = answeredA;
+			progressTextA.textContent = `${answeredA}/6`;
+
+			if (answeredB > 0) {
+				progressContainerB.style.display = 'block';
+				progressBarB.value = answeredB;
+				progressTextB.textContent = `${answeredB}/12`;
+			} else {
+				progressContainerB.style.display = 'none';
+			}
+		}
+
+		function highlightQuestion(el, shouldScroll = true) {
+			questions.forEach(q => q.classList.remove('active'));
+			el.classList.add('active');
+			
+			if (shouldScroll) {
+				const rect = el.getBoundingClientRect();
+				// Use a generous threshold to account for the sticky progress bar
+				const threshold = 160; // ~10rem
+				if (rect.top < threshold || rect.bottom > window.innerHeight) {
+					el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
+			}
+		}
+
+		// Initial Highlight (no scroll on first load)
+		if (questions.length > 0) highlightQuestion(questions[0], false);
+
+		// Load Saved State
+		function loadSavedState() {
+			let lastAnsweredIndex = -1;
+			for (let i = 0; i < 18; i++) {
+				const savedValue = localStorage.getItem(`asrs-${lang}-q${i}`);
+				if (savedValue !== null) {
+					const radio = form.querySelector(`input[name="q${i}"][value="${savedValue}"]`);
+					if (radio) {
+						radio.checked = true;
+						const helpContainer = document.getElementById(`help-q${i}`);
+						if (helpContainer) {
+							helpContainer.textContent = radio.dataset.description;
+							helpContainer.classList.add('visible');
+						}
+						lastAnsweredIndex = i;
+					}
+				}
+			}
+			
+			updateProgress();
+
+			// If user has progress, highlight the first unanswered question and scroll to it
+			if (lastAnsweredIndex !== -1 && lastAnsweredIndex < 17) {
+				highlightQuestion(questions[lastAnsweredIndex + 1], true);
+			} else if (lastAnsweredIndex === 17) {
+				highlightQuestion(questions[17], true);
+			}
+		}
+
+		loadSavedState();
+
+		// ASRS v1.1 Shaded Boxes Logic
+		// Part A: Q1-Q3 (Sometimes, Often, Very Often), Q4-Q6 (Often, Very Often)
+		// Part B: Q7, Q8, Q9 (Sometimes, Often, Very Often), Q10, Q11 (Often, Very Often), 
+		//         Q12, Q13 (Sometimes, Often, Very Often), Q14 (Often, Very Often), 
+		//         Q15 (Sometimes, Often, Very Often), Q16 (Often, Very Often),
+		//         Q17, Q18 (Often, Very Often)
+		const shadedThresholds = [
+			2, 2, 2, 3, 3, 3, // Part A (0-5)
+			2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 3, 3 // Part B (6-17)
+		];
+		form?.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const formData = new FormData(form);
+			let partAScore = 0;
+			let partBScore = 0;
+			let partBAnswered = false;
+
+			for (let i = 0; i < 18; i++) {
+				const value = formData.get(`q${i}`);
+				if (value !== null) {
+					const numericValue = parseInt(value.toString());
+					if (numericValue >= shadedThresholds[i]) {
+						if (i < 6) {
+							partAScore++;
+						} else {
+							partBScore++;
+						}
+					}
+					if (i >= 6) partBAnswered = true;
+				}
+			}
+
+			// Prepare Results
+			resultTitle.textContent = t['results.title'];
+			resultScoreInfoA.textContent = t['results.score_info'].replace('{score}', partAScore.toString());
+
+			if (partBAnswered) {
+				resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore.toString());
+				cardPartB.style.display = 'block';
+				resultScores.style.gridTemplateColumns = '1fr 1fr';
+			} else {
+				cardPartB.style.display = 'none';
+				resultScores.style.gridTemplateColumns = '1fr';
+			}
+
+
+			if (partAScore >= 4) {
+				resultLevel.textContent = t['results.level.high'];
+				resultInterpretation.textContent = t['results.interpretation.high'];
+				resultLevel.style.color = 'var(--pico-primary)';
+			} else {
+				resultLevel.textContent = t['results.level.low'];
+				resultInterpretation.textContent = t['results.interpretation.low'];
+				resultLevel.style.color = 'inherit';
+			}
+
+			modal.showModal();
+		});
+
+		closeModal?.addEventListener('click', () => {
+			modal.close();
+		});
+
+		// Close modal on click outside
+		modal?.addEventListener('click', (e) => {
+			if (e.target === modal) modal.close();
+		});
+	</script>
+
 	<style>
 		.intro-text {
 			font-style: italic;
 			color: var(--pico-muted-color);
-			margin-bottom: 3rem;
+			margin-bottom: 0.5rem;
+		}
+		.time-estimate {
+			font-size: 0.85rem;
+			color: var(--pico-muted-color);
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin-bottom: 2rem;
+		}
+		.progress-container {
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			background: var(--pico-background-color);
+			padding: 1rem 0;
+			margin-bottom: 2rem;
+			border-bottom: 1px solid var(--pico-muted-border-color);
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+		#clear-progress {
+			align-self: flex-end;
+			width: auto;
+			padding: 0.25rem 0.75rem;
+			font-size: 0.7rem;
+			margin-bottom: 0;
+		}
+		.progress-header {
+			display: flex;
+			justify-content: space-between;
+			font-size: 0.8rem;
+			font-weight: bold;
+			margin-bottom: 0.5rem;
+			color: var(--pico-muted-color);
+		}
+		progress {
+			margin-bottom: 0;
+			height: 0.5rem;
 		}
 		.question-container {
-			margin-bottom: 3rem;
+			margin-bottom: 4rem;
 			padding: 1.5rem;
 			background: var(--pico-card-background-color);
 			border-radius: var(--pico-border-radius);
 			border: 1px solid var(--pico-muted-border-color);
+			transition: all 0.3s ease;
+			opacity: 0.5;
+			scroll-margin-top: 10rem;
+		}
+		.question-container.active {
+			opacity: 1;
+			border-color: var(--pico-primary);
+			box-shadow: 0 0 0 1px var(--pico-primary);
 		}
 		.question-text {
 			font-size: 1.1rem;
@@ -106,6 +471,45 @@ const localeQuestions = questions[lang];
 		.question-number {
 			color: var(--pico-primary);
 			margin-right: 0.5rem;
+		}
+		.part-header {
+			margin-bottom: 2rem;
+			border-bottom: 2px solid var(--pico-primary);
+			display: inline-block;
+		}
+		.part-header h3 {
+			margin-bottom: 0.5rem;
+			font-size: 1.25rem;
+			color: var(--pico-primary);
+		}
+		.example-details {
+			border: none;
+			padding: 0;
+			margin: -0.5rem 0 1rem 1.5rem;
+			background: none;
+		}
+		.example-details summary {
+			font-size: 0.8rem;
+			color: var(--pico-primary);
+			text-decoration: underline;
+			cursor: pointer;
+			list-style: none;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.25rem;
+		}
+		.example-details summary::-webkit-details-marker {
+			display: none;
+		}
+		.example-text {
+			font-size: 0.85rem;
+			color: var(--pico-muted-color);
+			margin-top: 0.5rem;
+			margin-bottom: 0;
+			padding: 0.5rem 1rem;
+			background: var(--pico-secondary-background);
+			border-radius: var(--pico-border-radius);
+			border-left: 3px solid var(--pico-primary);
 		}
 		fieldset {
 			border: none;
@@ -190,27 +594,127 @@ const localeQuestions = questions[lang];
 			outline: 2px solid var(--pico-primary);
 			outline-offset: 2px;
 		}
-		.part-divider {
-			position: relative;
-			text-align: center;
-			margin: 5rem 0;
-		}
-		.part-divider hr {
-			margin: 0;
-			border-top: 2px solid var(--pico-primary);
-			opacity: 0.3;
-		}
-		.part-divider span {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: var(--pico-background-color);
-			padding: 0 2rem;
-			font-weight: 800;
+		.option-help {
+			margin-top: 0.75rem;
+			font-size: 0.85rem;
 			color: var(--pico-primary);
+			font-style: italic;
+			min-height: 1.2rem;
+			transition: opacity 0.3s ease;
+			opacity: 0;
+			text-align: center;
+		}
+		.option-help.visible {
+			opacity: 1;
+		}
+		#part-b-details {
+			border: none;
+			padding: 0;
+			margin: 2rem 0;
+			background: none;
+		}
+		.part-b-toggle {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 1rem;
+			padding: 1.5rem;
+			background: var(--pico-secondary-background);
+			color: var(--pico-primary);
+			border-radius: var(--pico-border-radius);
+			border: 2px solid var(--pico-muted-border-color);
+			font-weight: 800;
 			text-transform: uppercase;
-			letter-spacing: 0.2rem;
+			letter-spacing: 0.1rem;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			list-style: none;
+		}
+		.part-b-toggle::after {
+			display: none !important;
+		}
+		.part-b-toggle::-webkit-details-marker,
+		.part-b-toggle::marker {
+			display: none !important;
+			content: "";
+		}
+		.part-b-toggle:hover {
+			border-color: var(--pico-primary);
+			background: var(--pico-secondary-hover-background);
+		}
+		.part-b-toggle .chevron {
+			transition: transform 0.3s ease;
+		}
+		#part-b-details[open] .part-b-toggle {
+			margin-bottom: 2rem;
+			border-color: var(--pico-primary);
+		}
+		#part-b-details[open] .part-b-toggle .chevron {
+			transform: rotate(180deg);
+		}
+		#completion-zone {
+			scroll-margin-top: 10rem;
+		}
+		.part-b-intro {
+			padding: 1.5rem;
+			background: var(--pico-card-background-color);
+			border-left: 4px solid var(--pico-primary);
+			border-radius: var(--pico-border-radius);
+			margin-bottom: 2rem;
+			font-style: italic;
+		}
+		.part-b-intro p {
+			margin-bottom: 0;
+		}
+		.result-scores {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1rem;
+			margin: 1.5rem 0;
+		}
+		.score-card {
+			background: var(--pico-secondary-background);
+			padding: 1rem;
+			border-radius: var(--pico-border-radius);
+			text-align: center;
+		}
+		.score-card h5 {
+			margin-bottom: 0.5rem;
+			font-size: 0.9rem;
+			color: var(--pico-muted-color);
+		}
+		.score-card p {
+			margin-bottom: 0;
+			font-weight: bold;
+		}
+		#result-level {
+			text-align: center;
+			margin-bottom: 0.5rem;
+		}
+		#result-interpretation {
+			font-size: 0.95rem;
+			line-height: 1.5;
+			border-top: 1px solid var(--pico-muted-border-color);
+			padding-top: 1rem;
+			margin-bottom: 1.5rem;
+		}
+		.practitioner-note {
+			display: flex;
+			gap: 0.75rem;
+			align-items: flex-start;
+			padding: 1rem;
+			background: var(--pico-ins-color);
+			color: var(--pico-primary-inverse);
+			border-radius: var(--pico-border-radius);
+			margin-bottom: 0;
+		}
+		.practitioner-note svg {
+			flex-shrink: 0;
+			margin-top: 0.1rem;
+		}
+		.practitioner-note small {
+			line-height: 1.4;
+			font-weight: 500;
 		}
 	</style>
 </Layout>
