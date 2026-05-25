@@ -1,15 +1,13 @@
 name: Security
 
 on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_call:
-    inputs:
-      default-branch:
-        description: Default branch name
-        type: string
-        default: main
+...
 
-jobs:
-  semgrep:
     name: Semgrep (SAST)
     runs-on: ubuntu-latest
     container:
