@@ -29,6 +29,7 @@ export const ui = {
     'results.score_info': 'Part A Score: {score}/6',
     'results.score_info_partB': 'Frequent Symptoms: {score}/12',
     'results.practitioner_note': 'Share this summary with your doctor or healthcare professional for a more detailed clinical review.',
+    'assessment.partB.description': 'These additional questions provide more detail about your symptoms. While not required for the initial screening result, completing them is highly recommended if you plan to share these results with a healthcare professional.',
   },
   fr: {
     'site.title': 'Auto-évaluation ASRS-18 TDAH',
@@ -60,6 +61,7 @@ export const ui = {
     'results.score_info': 'Score Partie A : {score}/6',
     'results.score_info_partB': 'Symptômes fréquents : {score}/12',
     'results.practitioner_note': 'Partagez ce résumé avec votre médecin ou un professionnel de la santé pour un examen clinique plus détaillé.',
+    'assessment.partB.description': 'Ces questions supplémentaires fournissent plus de détails sur vos symptômes. Bien qu\'elles ne soient pas requises pour le résultat du dépistage initial, il est fortement recommandé de les remplir si vous prévoyez de partager ces résultats avec un professionnel de la santé.',
   },
   es: {
     'site.title': 'Autoinforme ASRS-18 TDAH',
@@ -91,6 +93,7 @@ export const ui = {
     'results.score_info': 'Puntuación Parte A: {score}/6',
     'results.score_info_partB': 'Síntomas frecuentes: {score}/12',
     'results.practitioner_note': 'Comparta este resumen con su médico o profesional de la salud para una revisión clínica más detallada.',
+    'assessment.partB.description': 'Estas preguntas adicionales proporcionan más detalles sobre sus síntomas. Aunque no son necesarias para el resultado del cribado inicial, se recomienda encarecidamente completarlas si tiene previsto compartir estos resultados con un profesional de la salud.',
   },
   it: {
     'site.title': 'Autovalutazione ASRS-18 ADHD',
@@ -122,6 +125,7 @@ export const ui = {
     'results.score_info': 'Punteggio Parte A: {score}/6',
     'results.score_info_partB': 'Sintomi frequenti: {score}/12',
     'results.practitioner_note': 'Condividi questo riepilogo con il tuo medico o operatore sanitario per una revisione clinica più dettagliata.',
+    'assessment.partB.description': 'Queste domande aggiuntive forniscono maggiori dettagli sui tuoi sintomi. Sebbene non siano necessarie per il risultato dello screening iniziale, il loro completamento è vivamente raccomandato se si prevede di condividere questi risultati con un operatore sanitario.',
   },
   pt: {
     'site.title': 'Auto-relato ASRS-18 TDAH',
@@ -153,6 +157,7 @@ export const ui = {
     'results.score_info': 'Pontuação Parte A: {score}/6',
     'results.score_info_partB': 'Sintomas frequentes: {score}/12',
     'results.practitioner_note': 'Partilhe este resumo com o seu médico ou profissional de saúde para uma revisão clínica mais detalhada.',
+    'assessment.partB.description': 'Estas perguntas adicionais fornecem mais detalhes sobre os seus sintomas. Embora não sejam necessárias para o resultado do rastreio inicial, é altamente recomendável completá-las se pretender partilhar estes resultados com um profissional de saúde.',
   },
 } as const;
 

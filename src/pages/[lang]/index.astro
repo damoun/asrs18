@@ -60,10 +60,14 @@ const localeQuestions = questions[lang];
 
 			{/* Part B: Optional Frequency Details */}
 			<details id="part-b-details">
-				<summary class="part-divider">
-					<hr />
-					<span>{t['assessment.partB']} <small>({lang === 'fr' ? 'Optionnel' : (lang === 'pt' || lang === 'es' || lang === 'it' ? 'Opcional' : 'Optional')})</small></span>
+				<summary class="part-b-toggle">
+					<span>{t['assessment.partB']}</span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
 				</summary>
+				
+				<div class="part-b-intro">
+					<p>{t['assessment.partB.description']}</p>
+				</div>
 				
 				{localeQuestions.slice(6).map((question, index) => {
 					const actualIndex = index + 6;
@@ -311,47 +315,53 @@ const localeQuestions = questions[lang];
 		#part-b-details {
 			border: none;
 			padding: 0;
-			margin: 0;
+			margin: 2rem 0;
 			background: none;
 		}
-		#part-b-details[open] {
-			margin-bottom: 3rem;
-		}
-		.part-divider {
-			position: relative;
-			text-align: center;
-			margin: 5rem 0;
-			list-style: none;
-			cursor: pointer;
-		}
-		.part-divider::-webkit-details-marker {
-			display: none;
-		}
-		.part-divider hr {
-			margin: 0;
-			border-top: 2px solid var(--pico-primary);
-			opacity: 0.3;
-		}
-		.part-divider span {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: var(--pico-background-color);
-			padding: 0 1.5rem;
-			font-weight: 800;
-			color: var(--pico-primary);
-			text-transform: uppercase;
-			letter-spacing: 0.1rem;
+		.part-b-toggle {
 			display: flex;
 			align-items: center;
-			gap: 0.5rem;
-			white-space: nowrap;
+			justify-content: center;
+			gap: 1rem;
+			padding: 1.5rem;
+			background: var(--pico-secondary-background);
+			color: var(--pico-primary);
+			border-radius: var(--pico-border-radius);
+			border: 2px solid var(--pico-muted-border-color);
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 0.1rem;
+			list-style: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
 		}
-		.part-divider span small {
-			font-size: 0.7rem;
-			letter-spacing: 0;
-			opacity: 0.7;
+		.part-b-toggle:hover {
+			border-color: var(--pico-primary);
+			background: var(--pico-secondary-hover-background);
+		}
+		.part-b-toggle .chevron {
+			transition: transform 0.3s ease;
+		}
+		#part-b-details[open] .part-b-toggle {
+			margin-bottom: 2rem;
+			border-color: var(--pico-primary);
+		}
+		#part-b-details[open] .part-b-toggle .chevron {
+			transform: rotate(180deg);
+		}
+		.part-b-toggle::-webkit-details-marker {
+			display: none;
+		}
+		.part-b-intro {
+			padding: 1.5rem;
+			background: var(--pico-card-background-color);
+			border-left: 4px solid var(--pico-primary);
+			border-radius: var(--pico-border-radius);
+			margin-bottom: 2rem;
+			font-style: italic;
+		}
+		.part-b-intro p {
+			margin-bottom: 0;
 		}
 		.result-scores {
 			display: grid;
