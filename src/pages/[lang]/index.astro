@@ -517,9 +517,13 @@ const localeExamples = examples[lang];
 
 					// Only show top 8 to avoid overflow if too many
 					frequentQuestions.slice(0, 8).forEach(q => {
-						const li = document.createElement('li');
-						li.textContent = q;
-						symptomList.appendChild(li);
+						const item = document.createElement('div');
+						item.className = 'symptom-item';
+						item.innerHTML = `
+							<span class="symptom-bullet">•</span>
+							<span class="symptom-text">${q}</span>
+						`;
+						symptomList.appendChild(item);
 					});
 
 					card.style.height = 'auto'; // Allow card to expand for details
@@ -1011,21 +1015,29 @@ const localeExamples = examples[lang];
 		.symptom-list {
 			display: flex;
 			flex-direction: column;
-			gap: 25px;
+			gap: 30px;
 			margin-bottom: 60px;
+			width: 100%;
+			padding: 0;
+			text-align: left;
 		}
-		.symptom-list li {
-			font-size: 36px;
-			line-height: 1.3;
-			padding-left: 50px;
-			position: relative;
+		.symptom-item {
+			display: flex;
+			gap: 30px;
+			align-items: flex-start;
 		}
-		.symptom-list li::before {
-			content: "•";
-			position: absolute;
-			left: 0;
+		.symptom-bullet {
 			color: #3b82f6;
-			font-weight: bold;
+			font-weight: 900;
+			font-size: 48px;
+			line-height: 1;
+			margin-top: -5px;
+		}
+		.symptom-text {
+			font-size: 36px;
+			line-height: 1.4;
+			color: rgba(255, 255, 255, 0.9);
+			flex: 1;
 		}
 
 		.practitioner-note {
