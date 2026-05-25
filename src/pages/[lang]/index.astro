@@ -19,14 +19,18 @@ const localeQuestions = questions[lang];
 
 <Layout title={t['site.title']} description={t['site.description']} lang={lang}>
 	<section>
-		<h2>{t['site.title']}</h2>
-		<p>{t['assessment.instructions']}</p>
+		<hgroup>
+			<h2>{t['site.title']}</h2>
+			<p class="intro-text">{t['assessment.instructions']}</p>
+		</hgroup>
 		
 		<form id="asrs-form">
 			{localeQuestions.map((question, index) => (
 				<>
 					<div class="question-container" data-index={index}>
-						<p><strong>{index + 1}. {question}</strong></p>
+						<p class="question-text">
+							<span class="question-number">{index + 1}.</span> {question}
+						</p>
 						<fieldset>
 							<div class="grid">
 								<label>
@@ -82,13 +86,26 @@ const localeQuestions = questions[lang];
 	</dialog>
 
 	<style>
-		.question-container {
-			margin-bottom: 2rem;
-			padding-bottom: 1rem;
-			border-bottom: 1px solid var(--pico-muted-border-color);
+		.intro-text {
+			font-style: italic;
+			color: var(--pico-muted-color);
+			margin-bottom: 3rem;
 		}
-		.question-container:last-of-type {
-			border-bottom: none;
+		.question-container {
+			margin-bottom: 3rem;
+			padding: 1.5rem;
+			background: var(--pico-card-background-color);
+			border-radius: var(--pico-border-radius);
+			border: 1px solid var(--pico-muted-border-color);
+		}
+		.question-text {
+			font-size: 1.1rem;
+			font-weight: 600;
+			margin-bottom: 1rem;
+		}
+		.question-number {
+			color: var(--pico-primary);
+			margin-right: 0.5rem;
 		}
 		fieldset {
 			border: none;
@@ -101,11 +118,12 @@ const localeQuestions = questions[lang];
 		.part-divider {
 			position: relative;
 			text-align: center;
-			margin: 4rem 0;
+			margin: 5rem 0;
 		}
 		.part-divider hr {
 			margin: 0;
-			border-top: 2px solid var(--pico-muted-border-color);
+			border-top: 2px solid var(--pico-primary);
+			opacity: 0.3;
 		}
 		.part-divider span {
 			position: absolute;
@@ -113,11 +131,11 @@ const localeQuestions = questions[lang];
 			left: 50%;
 			transform: translate(-50%, -50%);
 			background: var(--pico-background-color);
-			padding: 0 1.5rem;
-			font-weight: bold;
+			padding: 0 2rem;
+			font-weight: 800;
 			color: var(--pico-primary);
 			text-transform: uppercase;
-			letter-spacing: 0.1rem;
+			letter-spacing: 0.2rem;
 		}
 	</style>
 </Layout>
