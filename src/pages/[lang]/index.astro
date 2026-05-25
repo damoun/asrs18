@@ -37,26 +37,27 @@ const localeQuestions = questions[lang];
 					</p>
 					<fieldset>
 						<div class="grid">
-							<label>
+							<label data-tooltip={t['options.never.desc']}>
 								<input type="radio" name={`q${index}`} value="0" class="option-input" required />
 								<span class="option-label">{t['options.never']}</span>
 							</label>
-							<label>
+							<label data-tooltip={t['options.rarely.desc']}>
 								<input type="radio" name={`q${index}`} value="1" class="option-input" />
 								<span class="option-label">{t['options.rarely']}</span>
 							</label>
-							<label>
+							<label data-tooltip={t['options.sometimes.desc']}>
 								<input type="radio" name={`q${index}`} value="2" class="option-input" />
 								<span class="option-label">{t['options.sometimes']}</span>
 							</label>
-							<label>
+							<label data-tooltip={t['options.often.desc']}>
 								<input type="radio" name={`q${index}`} value="3" class="option-input" />
 								<span class="option-label">{t['options.often']}</span>
 							</label>
-							<label>
+							<label data-tooltip={t['options.veryOften.desc']}>
 								<input type="radio" name={`q${index}`} value="4" class="option-input" />
 								<span class="option-label">{t['options.veryOften']}</span>
 							</label>
+
 						</div>
 					</fieldset>
 				</div>
@@ -82,23 +83,23 @@ const localeQuestions = questions[lang];
 							</p>
 							<fieldset>
 								<div class="grid">
-									<label>
+									<label data-tooltip={t['options.never.desc']}>
 										<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" />
 										<span class="option-label">{t['options.never']}</span>
 									</label>
-									<label>
+									<label data-tooltip={t['options.rarely.desc']}>
 										<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" />
 										<span class="option-label">{t['options.rarely']}</span>
 									</label>
-									<label>
+									<label data-tooltip={t['options.sometimes.desc']}>
 										<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" />
 										<span class="option-label">{t['options.sometimes']}</span>
 									</label>
-									<label>
+									<label data-tooltip={t['options.often.desc']}>
 										<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" />
 										<span class="option-label">{t['options.often']}</span>
 									</label>
-									<label>
+									<label data-tooltip={t['options.veryOften.desc']}>
 										<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" />
 										<span class="option-label">{t['options.veryOften']}</span>
 									</label>
@@ -233,7 +234,7 @@ const localeQuestions = questions[lang];
 			margin-bottom: 3rem;
 		}
 		.question-container {
-			margin-bottom: 3rem;
+			margin-bottom: 4rem;
 			padding: 1.5rem;
 			background: var(--pico-card-background-color);
 			border-radius: var(--pico-border-radius);
