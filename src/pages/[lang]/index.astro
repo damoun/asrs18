@@ -113,6 +113,7 @@ const localeQuestions = questions[lang];
 			margin: 0;
 		}
 		.grid {
+			display: grid;
 			grid-template-columns: repeat(5, 1fr);
 			gap: 0;
 			border: 1px solid var(--pico-muted-border-color);
@@ -121,7 +122,7 @@ const localeQuestions = questions[lang];
 		}
 		@media (max-width: 600px) {
 			.grid {
-				grid-template-columns: repeat(5, 1fr);
+				grid-template-columns: 1fr;
 			}
 		}
 		.option-label {
@@ -137,8 +138,18 @@ const localeQuestions = questions[lang];
 			border-radius: 0;
 			cursor: pointer;
 			transition: all 0.2s ease;
-			font-size: 0.8rem;
+			font-size: 0.85rem;
 			margin-bottom: 0;
+		}
+		@media (max-width: 600px) {
+			.option-label {
+				border-right: none;
+				border-bottom: 1px solid var(--pico-muted-border-color);
+				padding: 0.75rem 1rem;
+			}
+			label:last-child .option-label {
+				border-bottom: none;
+			}
 		}
 		label:last-child .option-label {
 			border-right: none;
