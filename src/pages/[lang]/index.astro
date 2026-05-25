@@ -25,6 +25,10 @@ const localeQuestions = questions[lang];
 		</hgroup>
 		
 		<form id="asrs-form">
+			<div class="part-header">
+				<h3>{t['assessment.partA']}</h3>
+			</div>
+
 			{/* Part A: Mandatory Screening */}
 			{localeQuestions.slice(0, 6).map((question, index) => (
 				<div class="question-container" data-index={index}>
@@ -243,6 +247,16 @@ const localeQuestions = questions[lang];
 		.question-number {
 			color: var(--pico-primary);
 			margin-right: 0.5rem;
+		}
+		.part-header {
+			margin-bottom: 2rem;
+			border-bottom: 2px solid var(--pico-primary);
+			display: inline-block;
+		}
+		.part-header h3 {
+			margin-bottom: 0.5rem;
+			font-size: 1.25rem;
+			color: var(--pico-primary);
 		}
 		fieldset {
 			border: none;
