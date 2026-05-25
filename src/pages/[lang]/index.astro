@@ -65,7 +65,7 @@ const localeExamples = examples[lang];
 						</details>
 					</div>
 					<fieldset>
-						<div class="grid">
+						<div class="options-grid">
 							<label>
 								<input type="radio" name={`q${index}`} value="0" class="option-input" required data-description={t['options.never.desc']} />
 								<span class="option-label">{t['options.never']}</span>
@@ -118,7 +118,7 @@ const localeExamples = examples[lang];
 									</details>
 								</div>
 								<fieldset>
-									<div class="grid">
+									<div class="options-grid">
 										<label>
 											<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" data-description={t['options.never.desc']} />
 											<span class="option-label">{t['options.never']}</span>
@@ -453,13 +453,7 @@ const localeExamples = examples[lang];
 				cardScoreB.textContent = `${partBScore}/12`;
 				cardScoreItemB.style.display = 'flex';
 
-				if (window.innerWidth > 600) {
-					resultScores.style.display = 'grid';
-					resultScores.style.gridTemplateColumns = '1fr 1fr';
-				} else {
-					resultScores.style.display = 'flex';
-					resultScores.style.flexDirection = 'column';
-				}
+				resultScores.style.display = 'grid';
 			} else {
 				cardPartB.style.display = 'none';
 				resultScores.style.display = 'block';
@@ -761,7 +755,7 @@ const localeExamples = examples[lang];
 			padding: 0;
 			margin: 0;
 		}
-		.grid {
+		.options-grid {
 			display: flex;
 			flex-wrap: nowrap;
 			gap: 0;
@@ -771,18 +765,18 @@ const localeExamples = examples[lang];
 			margin-bottom: var(--pico-spacing);
 			padding: 0;
 		}
-		.grid label {
+		.options-grid label {
 			flex: 1 1 0;
 			width: 20%;
 			margin: 0 !important;
 			padding: 0 !important;
 			display: flex;
 		}
-		@media (max-width: 600px) {
-			.grid {
+		@media (max-width: 800px) {
+			.options-grid {
 				flex-direction: column;
 			}
-			.grid label {
+			.options-grid label {
 				width: 100%;
 			}
 		}
@@ -804,8 +798,10 @@ const localeExamples = examples[lang];
 			font-size: 0.85rem;
 			margin: 0;
 			line-height: 1.2;
+			overflow-wrap: break-word;
+			hyphens: auto;
 		}
-		@media (min-width: 601px) {
+		@media (min-width: 801px) {
 			.option-label {
 				border-bottom: none;
 			}
@@ -813,7 +809,7 @@ const localeExamples = examples[lang];
 				border-right: none;
 			}
 		}
-		@media (max-width: 600px) {
+		@media (max-width: 800px) {
 			.option-label {
 				border-right: none;
 			}
@@ -913,7 +909,7 @@ const localeExamples = examples[lang];
 		}
 		.result-scores {
 			display: grid;
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 			gap: 1rem;
 			margin: 1.5rem 0;
 		}
@@ -942,7 +938,7 @@ const localeExamples = examples[lang];
 			gap: 1rem;
 			margin-top: 1rem;
 		}
-		@media (max-width: 600px) {
+		@media (max-width: 800px) {
 			.modal-footer-btns {
 				grid-template-columns: 1fr;
 			}
@@ -971,19 +967,19 @@ const localeExamples = examples[lang];
 			color: #1e293b;
 			display: flex;
 			flex-direction: column;
-			padding: 0;
+			padding: 100px;
 			font-family: 'Inter', system-ui, -apple-system, sans-serif;
 			position: relative;
 			overflow: hidden;
 		}
+
 		.share-card.summary-mode {
 			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 			color: white;
 		}
 		.share-card .card-header {
 			text-align: center;
-			margin-top: 120px;
-			margin-bottom: 60px;
+			margin-bottom: 80px;
 			width: 100%;
 			display: flex;
 			flex-direction: column;
@@ -1026,7 +1022,6 @@ const localeExamples = examples[lang];
 		}
 		.share-card.summary-mode .card-body {
 			justify-content: center;
-			padding-bottom: 0; /* Removed buffer */
 		}
 		.share-card .result-box {
 			background: #f8fafc;
@@ -1096,14 +1091,15 @@ const localeExamples = examples[lang];
 			line-height: 1.4;
 		}
 		.share-card .card-footer {
-			position: absolute;
-			bottom: 120px;
-			left: 0;
-			right: 0;
+			margin-top: auto;
 			text-align: center;
 			width: 100%;
-			padding: 0;
-			border: none !important;
+			padding: 60px 0 0 0;
+			border-top: 4px solid rgba(59, 130, 246, 0.2);
+		}
+		.summary-mode .card-footer {
+			border-top: none;
+			margin-top: 100px;
 		}
 
 		.share-card .footer-note {
