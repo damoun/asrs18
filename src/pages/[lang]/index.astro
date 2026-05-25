@@ -335,9 +335,12 @@ const localeQuestions = questions[lang];
 			transition: all 0.2s ease;
 			list-style: none;
 		}
+		.part-b-toggle::after {
+			display: none !important;
+		}
 		.part-b-toggle::-webkit-details-marker,
 		.part-b-toggle::marker {
-			display: none;
+			display: none !important;
 			content: "";
 		}
 		.part-b-toggle:hover {
