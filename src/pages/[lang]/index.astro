@@ -31,10 +31,19 @@ const localeExamples = examples[lang];
 
 		<div class="progress-container">
 			<div class="progress-header">
-				<span>{t['assessment.progress']}</span>
-				<span id="progress-text">0/18</span>
+				<span>{t['results.partA.title']}</span>
+				<span id="progress-text-A">0/6</span>
 			</div>
-			<progress id="assessment-progress" value="0" max="18"></progress>
+			<progress id="assessment-progress-A" value="0" max="6"></progress>
+			
+			<div id="progress-container-B" style="display: none; margin-top: 0.5rem;">
+				<div class="progress-header">
+					<span>{t['results.partB.title']}</span>
+					<span id="progress-text-B">0/12</span>
+				</div>
+				<progress id="assessment-progress-B" value="0" max="12" class="secondary"></progress>
+			</div>
+
 			<button id="clear-progress" class="outline secondary contrast smaller">{t['assessment.clear']}</button>
 		</div>
 		
@@ -183,8 +192,11 @@ const localeExamples = examples[lang];
 		const resultScoreInfoB = document.getElementById('result-score-info-B');
 		const resultInterpretation = document.getElementById('result-interpretation');
 		const resultScores = document.querySelector('.result-scores');
-		const progressBar = document.getElementById('assessment-progress');
-		const progressText = document.getElementById('progress-text');
+		const progressBarA = document.getElementById('assessment-progress-A');
+		const progressTextA = document.getElementById('progress-text-A');
+		const progressBarB = document.getElementById('assessment-progress-B');
+		const progressTextB = document.getElementById('progress-text-B');
+		const progressContainerB = document.getElementById('progress-container-B');
 		const questions = document.querySelectorAll('.question-container');
 		const clearBtn = document.getElementById('clear-progress');
 
@@ -230,9 +242,28 @@ const localeExamples = examples[lang];
 
 		function updateProgress() {
 			const formData = new FormData(form);
-			const answered = Array.from(formData.keys()).filter(key => key.startsWith('q')).length;
-			progressBar.value = answered;
-			progressText.textContent = `${answered}/18`;
+			const keys = Array.from(formData.keys()).filter(key => key.startsWith('q'));
+			
+			const answeredA = keys.filter(k => {
+				const index = parseInt(k.substring(1));
+				return index < 6;
+			}).length;
+			
+			const answeredB = keys.filter(k => {
+				const index = parseInt(k.substring(1));
+				return index >= 6;
+			}).length;
+
+			progressBarA.value = answeredA;
+			progressTextA.textContent = `${answeredA}/6`;
+
+			if (answeredB > 0) {
+				progressContainerB.style.display = 'block';
+				progressBarB.value = answeredB;
+				progressTextB.textContent = `${answeredB}/12`;
+			} else {
+				progressContainerB.style.display = 'none';
+			}
 		}
 
 		function highlightQuestion(el, shouldScroll = true) {
