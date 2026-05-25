@@ -217,7 +217,13 @@ const localeExamples = examples[lang];
 	</div>
 
 	<!-- html2canvas via Bunny CDN (hopjs) -->
-	<script src="https://cdn.hopjs.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" is:inline></script>
+	<script 
+		type="text/javascript" 
+		src="https://cdn.hopjs.net/npm/html2canvas@1.4.1/dist/html2canvas.js" 
+		crossorigin="anonymous" 
+		referrerpolicy="no-referrer"
+		is:inline>
+	</script>
 
 	<script is:inline define:vars={{ lang, t }}>
 		const form = document.getElementById('asrs-form');
