@@ -1026,56 +1026,65 @@ const localeExamples = examples[lang];
 		}
 		.share-card.summary-mode .card-body {
 			justify-content: center;
-			padding-bottom: 300px;
+			padding-bottom: 0; /* Removed buffer */
 		}
 		.share-card .result-box {
 			background: #f8fafc;
-			border: 8px solid #3b82f6;
+			border: 12px solid #3b82f6; /* Thicker border */
 			border-radius: 60px;
-			padding: 60px 80px;
+			padding: 100px 80px; /* More padding */
 			text-align: center;
 			width: 100%;
 			margin: 0 !important;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
 		}
 		.summary-mode .result-box {
-			background: rgba(255, 255, 255, 0.05);
+			background: rgba(255, 255, 255, 0.1); /* Slightly more opaque */
+			border-color: #60a5fa;
 		}
 		.share-card .result-level-text {
-			font-size: 84px;
+			font-size: 96px; /* Bigger */
 			color: #2563eb;
-			margin-bottom: 60px;
+			margin-bottom: 80px;
 			line-height: 1.1;
 			font-weight: 900;
 			text-align: center;
 		}
 		.summary-mode .result-level-text {
-			color: #60a5fa;
+			color: #ffffff; /* White for better contrast on dark bg */
+			text-shadow: 0 4px 10px rgba(0,0,0,0.3);
 		}
 		.share-card .card-scores {
 			display: flex;
 			flex-direction: column;
-			gap: 30px;
+			gap: 40px;
 			width: 100%;
 		}
 		.share-card .card-score-item {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-			padding-bottom: 15px;
+			border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+			padding-bottom: 20px;
 		}
 		.summary-mode .card-score-item {
-			border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+			border-bottom: 3px solid rgba(255, 255, 255, 0.2);
 		}
 		.share-card .label {
-			font-size: 44px;
-			font-weight: 600;
-			opacity: 0.8;
+			font-size: 48px;
+			font-weight: 700;
+			opacity: 0.9;
 		}
 		.share-card .value {
-			font-size: 64px;
+			font-size: 72px;
 			font-weight: 900;
-			color: #3b82f6;
+			color: #2563eb;
+		}
+		.summary-mode .value {
+			color: #60a5fa;
 		}
 		.share-card .card-disclaimer {
 			margin-top: 40px; /* Removed auto margin */
