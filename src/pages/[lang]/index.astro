@@ -178,7 +178,10 @@ const localeExamples = examples[lang];
 			</div>
 			<footer>
 				<p><small>{t['results.disclaimer']}</small></p>
-				<button id="share-button">{t['results.share']}</button>
+				<div class="modal-footer-btns">
+					<button id="share-button" class="outline">{t['results.share']}</button>
+					<button id="share-detailed-button">{t['results.share_detailed']}</button>
+				</div>
 			</footer>
 		</article>
 	</dialog>
@@ -209,7 +212,7 @@ const localeExamples = examples[lang];
 			</div>
 			
 			<div class="card-footer">
-				<div class="footer-note">Check your score at:</div>
+				<div class="footer-note">{t['report.check_at']}</div>
 				<div class="footer-domain">asrs18.com</div>
 			</div>
 		</div>
@@ -244,6 +247,7 @@ const localeExamples = examples[lang];
 		const clearBtn = document.getElementById('clear-progress');
 		const partBDetails = document.getElementById('part-b-details');
 		const shareBtn = document.getElementById('share-button');
+		const shareDetailedBtn = document.getElementById('share-detailed-button');
 		const cardResultLevel = document.getElementById('card-result-level');
 		const cardScoreA = document.getElementById('card-score-A');
 		const cardScoreB = document.getElementById('card-score-B');
@@ -461,14 +465,33 @@ const localeExamples = examples[lang];
 			modal.showModal();
 		});
 
-		// Share Image Logic
+		// Share Image Logic (Summary)
 		shareBtn?.addEventListener('click', async () => {
-			const originalText = shareBtn.textContent;
-			shareBtn.textContent = '...';
-			shareBtn.disabled = true;
+			await generateImage(false);
+		});
+
+		// Share Image Logic (Detailed)
+		shareDetailedBtn?.addEventListener('click', async () => {
+			await generateImage(true);
+		});
+
+		async function generateImage(isDetailed) {
+			const activeBtn = isDetailed ? shareDetailedBtn : shareBtn;
+			const originalText = activeBtn.textContent;
+			activeBtn.textContent = '...';
+			activeBtn.disabled = true;
 
 			try {
 				const card = document.getElementById('share-card');
+				
+				// Handle detailed mode
+				if (isDetailed) {
+					card.classList.add('detailed');
+					// We'll implement the actual symptom listing in the next step
+				} else {
+					card.classList.remove('detailed');
+				}
+
 				const canvas = await html2canvas(card, {
 					scale: 1, 
 					useCORS: true,
@@ -477,16 +500,16 @@ const localeExamples = examples[lang];
 
 				const image = canvas.toDataURL('image/png');
 				const link = document.createElement('a');
-				link.download = `asrs18-result-${lang}.png`;
+				link.download = `asrs18-${isDetailed ? 'report' : 'summary'}-${lang}.png`;
 				link.href = image;
 				link.click();
 			} catch (err) {
 				console.error('Error generating image:', err);
 			} finally {
-				shareBtn.textContent = originalText;
-				shareBtn.disabled = false;
+				activeBtn.textContent = originalText;
+				activeBtn.disabled = false;
 			}
-		});
+		}
 
 		closeModal?.addEventListener('click', () => {
 			modal.close();
@@ -786,6 +809,18 @@ const localeExamples = examples[lang];
 			text-align: center;
 			margin-bottom: 0.5rem;
 		}
+		.modal-footer-btns {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1rem;
+			margin-top: 1rem;
+		}
+		@media (max-width: 600px) {
+			.modal-footer-btns {
+				grid-template-columns: 1fr;
+			}
+		}
+		
 		#result-interpretation {
 			font-size: 0.95rem;
 			line-height: 1.5;
