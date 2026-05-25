@@ -73,10 +73,12 @@ const localeQuestions = questions[lang];
 		<article>
 			<header>
 				<button aria-label="Close" rel="prev" id="close-modal"></button>
-				<h3>{t['results.title']}</h3>
+				<h3 id="result-title"></h3>
 			</header>
 			<div id="result-content">
-				<!-- Results will be injected here -->
+				<h4 id="result-level"></h4>
+				<p id="result-score-info"></p>
+				<p id="result-interpretation"></p>
 			</div>
 			<footer>
 				<p><small>{t['results.disclaimer']}</small></p>
@@ -84,6 +86,66 @@ const localeQuestions = questions[lang];
 			</footer>
 		</article>
 	</dialog>
+
+	<script is:inline define:vars={{ lang, t }}>
+		const form = document.getElementById('asrs-form');
+		const modal = document.getElementById('result-modal');
+		const closeModal = document.getElementById('close-modal');
+		
+		const resultTitle = document.getElementById('result-title');
+		const resultLevel = document.getElementById('result-level');
+		const resultScoreInfo = document.getElementById('result-score-info');
+		const resultInterpretation = document.getElementById('result-interpretation');
+
+		// ASRS v1.1 Shaded Boxes Logic
+		// Part A: Q1-Q3 (Sometimes, Often, Very Often), Q4-Q6 (Often, Very Often)
+		// Part B: Q7, Q8, Q9 (Sometimes, Often, Very Often), Q10, Q11 (Often, Very Often), 
+		//         Q12, Q13 (Sometimes, Often, Very Often), Q14 (Often, Very Often), 
+		//         Q15 (Sometimes, Often, Very Often), Q16 (Often, Very Often),
+		//         Q17, Q18 (Often, Very Often)
+		const shadedThresholds = [
+			2, 2, 2, 3, 3, 3, // Part A (0-5)
+			2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 3, 3 // Part B (6-17)
+		];
+
+		form?.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const formData = new FormData(form);
+			let partAScore = 0;
+
+			for (let i = 0; i < 6; i++) {
+				const value = parseInt(formData.get(`q${i}`));
+				if (value >= shadedThresholds[i]) {
+					partAScore++;
+				}
+			}
+
+			// Prepare Results
+			resultTitle.textContent = t['results.title'];
+			resultScoreInfo.textContent = t['results.score_info'].replace('{score}', partAScore);
+
+			if (partAScore >= 4) {
+				resultLevel.textContent = t['results.level.high'];
+				resultInterpretation.textContent = t['results.interpretation.high'];
+				resultLevel.style.color = 'var(--pico-primary)';
+			} else {
+				resultLevel.textContent = t['results.level.low'];
+				resultInterpretation.textContent = t['results.interpretation.low'];
+				resultLevel.style.color = 'inherit';
+			}
+
+			modal.showModal();
+		});
+
+		closeModal?.addEventListener('click', () => {
+			modal.close();
+		});
+
+		// Close modal on click outside
+		modal?.addEventListener('click', (e) => {
+			if (e.target === modal) modal.close();
+		});
+	</script>
 
 	<style>
 		.intro-text {
