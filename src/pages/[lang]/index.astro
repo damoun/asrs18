@@ -92,61 +92,63 @@ const localeExamples = examples[lang];
 				</div>
 			))}
 
-			<div class="part-b-intro">
-				<p>{t['assessment.partB.description']}</p>
-			</div>
+			<div id="completion-zone">
+				<div class="part-b-intro">
+					<p>{t['assessment.partB.description']}</p>
+				</div>
 
-			{/* Part B: Optional Frequency Details */}
-			<details id="part-b-details">
-				<summary class="part-b-toggle">
-					<span>{t['assessment.partB']}</span>
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
-				</summary>
-				
-				{localeQuestions.slice(6).map((question, index) => {
-					const actualIndex = index + 6;
-					return (
-						<div class="question-container" data-index={actualIndex}>
-							<div class="question-header">
-								<p class="question-text">
-									<span class="question-number">{actualIndex + 1}.</span> {question}
-								</p>
-								<details class="example-details">
-									<summary>{t['assessment.show_examples']}</summary>
-									<p class="example-text">{localeExamples[actualIndex]}</p>
-								</details>
-							</div>
-							<fieldset>
-								<div class="grid">
-									<label>
-										<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" data-description={t['options.never.desc']} />
-										<span class="option-label">{t['options.never']}</span>
-									</label>
-									<label>
-										<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" data-description={t['options.rarely.desc']} />
-										<span class="option-label">{t['options.rarely']}</span>
-									</label>
-									<label>
-										<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" data-description={t['options.sometimes.desc']} />
-										<span class="option-label">{t['options.sometimes']}</span>
-									</label>
-									<label>
-										<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" data-description={t['options.often.desc']} />
-										<span class="option-label">{t['options.often']}</span>
-									</label>
-									<label>
-										<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" data-description={t['options.veryOften.desc']} />
-										<span class="option-label">{t['options.veryOften']}</span>
-									</label>
+				{/* Part B: Optional Frequency Details */}
+				<details id="part-b-details">
+					<summary class="part-b-toggle">
+						<span>{t['assessment.partB']}</span>
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+					</summary>
+					
+					{localeQuestions.slice(6).map((question, index) => {
+						const actualIndex = index + 6;
+						return (
+							<div class="question-container" data-index={actualIndex}>
+								<div class="question-header">
+									<p class="question-text">
+										<span class="question-number">{actualIndex + 1}.</span> {question}
+									</p>
+									<details class="example-details">
+										<summary>{t['assessment.show_examples']}</summary>
+										<p class="example-text">{localeExamples[actualIndex]}</p>
+									</details>
 								</div>
-								<div class="option-help" id={`help-q${actualIndex}`}>&nbsp;</div>
-							</fieldset>
-						</div>
-					);
-				})}
-			</details>
-			
-			<button type="submit" id="submit-btn">{t['assessment.submit']}</button>
+								<fieldset>
+									<div class="grid">
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="0" class="option-input" data-description={t['options.never.desc']} />
+											<span class="option-label">{t['options.never']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="1" class="option-input" data-description={t['options.rarely.desc']} />
+											<span class="option-label">{t['options.rarely']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="2" class="option-input" data-description={t['options.sometimes.desc']} />
+											<span class="option-label">{t['options.sometimes']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="3" class="option-input" data-description={t['options.often.desc']} />
+											<span class="option-label">{t['options.often']}</span>
+										</label>
+										<label>
+											<input type="radio" name={`q${actualIndex}`} value="4" class="option-input" data-description={t['options.veryOften.desc']} />
+											<span class="option-label">{t['options.veryOften']}</span>
+										</label>
+									</div>
+									<div class="option-help" id={`help-q${actualIndex}`}>&nbsp;</div>
+								</fieldset>
+							</div>
+						);
+					})}
+				</details>
+				
+				<button type="submit" id="submit-btn">{t['assessment.submit']}</button>
+			</div>
 		</form>
 	</section>
 
@@ -236,10 +238,10 @@ const localeExamples = examples[lang];
 				const currentIndex = parseInt(currentQ.dataset.index);
 				
 				if (currentIndex === 5) {
-					// End of Part A: Scroll to submit button
-					const submitBtn = document.getElementById('submit-btn');
-					if (submitBtn) {
-						submitBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					// End of Part A: Scroll to completion zone (Part B intro + Submit)
+					const completionZone = document.getElementById('completion-zone');
+					if (completionZone) {
+						completionZone.scrollIntoView({ behavior: 'smooth', block: 'end' });
 					}
 				} else {
 					const nextQ = currentQ.nextElementSibling;
