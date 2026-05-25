@@ -27,6 +27,7 @@ export const ui = {
     'results.interpretation.high': 'Four or more responses in the shaded boxes of Part A indicate that your symptoms are highly consistent with ADHD in adults. A further evaluation by a healthcare professional is recommended.',
     'results.interpretation.low': 'Your responses in Part A do not meet the threshold for symptoms highly consistent with ADHD. However, if you have significant concerns, you should still consult a professional.',
     'results.score_info': 'You scored {score} out of 6 in Part A.',
+    'results.score_info_partB': 'You scored {score} out of 12 in Part B.',
   },
   fr: {
     'site.title': 'Auto-évaluation ASRS-18 TDAH',
@@ -56,6 +57,7 @@ export const ui = {
     'results.interpretation.high': 'Quatre réponses ou plus dans les zones grisées de la partie A indiquent que vos symptômes sont fortement évocateurs d\'un TDAH chez l\'adulte. Une évaluation plus approfondie par un professionnel de la santé est recommandée.',
     'results.interpretation.low': 'Vos réponses à la partie A n\'atteignent pas le seuil des symptômes fortement évocateurs d\'un TDAH. Cependant, si vous avez des préoccupations importantes, vous devriez tout de même consulter un professionnel.',
     'results.score_info': 'Votre score est de {score} sur 6 à la partie A.',
+    'results.score_info_partB': 'Votre score est de {score} sur 12 à la partie B.',
   },
   es: {
     'site.title': 'Autoinforme ASRS-18 TDAH',
@@ -85,6 +87,7 @@ export const ui = {
     'results.interpretation.high': 'Cuatro o más respuestas en las casillas sombreadas de la Parte A indican que sus síntomas son muy consistentes con el TDAH en adultos. Se recomienda una evaluación adicional por parte de un profesional de la salud.',
     'results.interpretation.low': 'Sus respuestas en la Parte A no alcanzan el umbral de síntomas muy consistentes con el TDAH. Sin embargo, si tiene dudas significativas, debería consultar a un profesional.',
     'results.score_info': 'Obtuvo una puntuación de {score} sobre 6 en la Parte A.',
+    'results.score_info_partB': 'Obtuvo una puntuación de {score} sobre 12 en la Parte B.',
   },
   it: {
     'site.title': 'Autovalutazione ASRS-18 ADHD',
@@ -114,6 +117,7 @@ export const ui = {
     'results.interpretation.high': 'Quatro o più risposte nelle caselle ombreggiate della Parte A indicano che i tuoi sintomi sono altamente coerenti con l\'ADHD negli adulti. Si raccomanda un\'ulteriore valutazione da parte di un operatore sanitario.',
     'results.interpretation.low': 'Le tue risposte nella Parte A non soddisfano la soglia per i sintomi altamente coerenti con l\'ADHD. Tuttavia, se hai dubbi significativi, dovresti comunque consultare un professionista.',
     'results.score_info': 'Hai ottenuto un punteggio di {score} su 6 nella Parte A.',
+    'results.score_info_partB': 'Hai ottenuto un punteggio di {score} su 12 nella Parte B.',
   },
   pt: {
     'site.title': 'Auto-relato ASRS-18 TDAH',
@@ -140,9 +144,10 @@ export const ui = {
     'results.partB.title': 'Parte B (Sintomas)',
     'results.level.high': 'Sintomas altamente consistentes com TDAH',
     'results.level.low': 'Sintomas não consistentes com TDAH',
-    'results.interpretation.high': 'Quatro ou mais respostas nas casas sombreadas da Parte A indicam que os seus sintomas são altamente consistentes com TDAH em adultos. Recomenda-se uma avaliação posterior por um profissional de saúde.',
+    'results.interpretation.high': 'Quatro o mais respostas nas casas sombreadas da Parte A indicam que os seus sintomas são altamente consistentes com TDAH em adultos. Recomenda-se uma avaliação posterior por um profissional de saúde.',
     'results.interpretation.low': 'As suas respostas na Parte A não atingem o limiar para sintomas altamente consistentes com TDAH. No entanto, se tiver preocupações significativas, deve consultar um profissional.',
     'results.score_info': 'Obteve {score} de 6 pontos na Parte A.',
+    'results.score_info_partB': 'Obteve {score} de 12 pontos na Parte B.',
   },
 } as const;
 
@@ -201,7 +206,7 @@ export const questions = {
     "¿Con qué frecuencia tiene dificultades para concentrarse en lo que le dicen, incluso cuando le hablan directamente?",
     "¿Con qué frecuencia pierde o tiene dificultades para encontrar cosas en casa o en el trabajo?",
     "¿Con qué frecuencia se distrae con la actividad o el ruido a su alrededor?",
-    "¿Con qué frecuencia abandona su asiento en reuniones u otras situaciones en las que se espera que permanca sentado?",
+    "¿Con qué frecuencia abandona su asiento en reuniones u otras situaciones en las que se espera que permanezca sentado?",
     "¿Con qué frecuencia se siente inquieto o impaciente?",
     "¿Con qué frecuencia tiene dificultades para descansar y relajarse cuando tiene tiempo para usted?",
     "¿Con qué frecuencia se encuentra hablando demasiado en situaciones sociales?",
@@ -235,13 +240,13 @@ export const questions = {
     "Com que frequência tem problemas em lembrar-se de compromissos ou obrigações?",
     "Quando tem uma tarefa que requer muito pensamento, com que frequência evita ou adia o início?",
     "Com que frequência mexe as mãos ou os pés ou se contorce na cadeira quando tem de estar sentado durante muito tempo?",
-    "Com que frequência se sente excessivamente ativo e impelido a fazer coisas, como se estivesse movido por um motor?",
+    "Com que frequência se sente excessivamente activo e impelido a fazer coisas, como se estivesse movido por um motor?",
     "Com que frequência comete erros por descuido quando tem de trabalhar num projeto aborrecido ou difícil?",
     "Com que frequência tem dificuldade em manter a atenção quando está a trabalhar em algo aborrecido ou repetitivo?",
     "Com que frequência tem dificuldade em concentrar-se no que as pessoas lhe dizem, mesmo quando estão a falar diretamente consigo?",
     "Com que frequência perde ou tem dificuldade em encontrar coisas em casa ou no trabalho?",
     "Com que frequência se distrai com atividades ou ruídos ao seu redor?",
-    "Com que frequência se levanta do lugar em reuniões ou noutras situações em que é suposto permanecer sentado?",
+    "Com que frequência se levanta do lugar em reuniões ou noutras situazioni em que é suposto permanecer sentado?",
     "Com que frequência se sente inquieto ou agitado?",
     "Com que frequência tem dificuldade em descontrair e relaxar quando tem tempo para si próprio?",
     "Com que frequência se vê a falar demais em situações sociais?",

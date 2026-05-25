@@ -77,7 +77,16 @@ const localeQuestions = questions[lang];
 			</header>
 			<div id="result-content">
 				<h4 id="result-level"></h4>
-				<p id="result-score-info"></p>
+				<div class="result-scores">
+					<div class="score-card">
+						<h5>{t['results.partA.title']}</h5>
+						<p id="result-score-info-A"></p>
+					</div>
+					<div class="score-card">
+						<h5>{t['results.partB.title']}</h5>
+						<p id="result-score-info-B"></p>
+					</div>
+				</div>
 				<p id="result-interpretation"></p>
 			</div>
 			<footer>
@@ -94,7 +103,8 @@ const localeQuestions = questions[lang];
 		
 		const resultTitle = document.getElementById('result-title');
 		const resultLevel = document.getElementById('result-level');
-		const resultScoreInfo = document.getElementById('result-score-info');
+		const resultScoreInfoA = document.getElementById('result-score-info-A');
+		const resultScoreInfoB = document.getElementById('result-score-info-B');
 		const resultInterpretation = document.getElementById('result-interpretation');
 
 		// ASRS v1.1 Shaded Boxes Logic
@@ -112,17 +122,23 @@ const localeQuestions = questions[lang];
 			e.preventDefault();
 			const formData = new FormData(form);
 			let partAScore = 0;
+			let partBScore = 0;
 
-			for (let i = 0; i < 6; i++) {
+			for (let i = 0; i < 18; i++) {
 				const value = parseInt(formData.get(`q${i}`));
 				if (value >= shadedThresholds[i]) {
-					partAScore++;
+					if (i < 6) {
+						partAScore++;
+					} else {
+						partBScore++;
+					}
 				}
 			}
 
 			// Prepare Results
 			resultTitle.textContent = t['results.title'];
-			resultScoreInfo.textContent = t['results.score_info'].replace('{score}', partAScore);
+			resultScoreInfoA.textContent = t['results.score_info'].replace('{score}', partAScore);
+			resultScoreInfoB.textContent = t['results.score_info_partB'].replace('{score}', partBScore);
 
 			if (partAScore >= 4) {
 				resultLevel.textContent = t['results.level.high'];
@@ -273,6 +289,37 @@ const localeQuestions = questions[lang];
 			color: var(--pico-primary);
 			text-transform: uppercase;
 			letter-spacing: 0.2rem;
+		}
+		.result-scores {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1rem;
+			margin: 1.5rem 0;
+		}
+		.score-card {
+			background: var(--pico-secondary-background);
+			padding: 1rem;
+			border-radius: var(--pico-border-radius);
+			text-align: center;
+		}
+		.score-card h5 {
+			margin-bottom: 0.5rem;
+			font-size: 0.9rem;
+			color: var(--pico-muted-color);
+		}
+		.score-card p {
+			margin-bottom: 0;
+			font-weight: bold;
+		}
+		#result-level {
+			text-align: center;
+			margin-bottom: 0.5rem;
+		}
+		#result-interpretation {
+			font-size: 0.95rem;
+			line-height: 1.5;
+			border-top: 1px solid var(--pico-muted-border-color);
+			padding-top: 1rem;
 		}
 	</style>
 </Layout>
