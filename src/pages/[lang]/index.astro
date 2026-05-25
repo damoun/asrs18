@@ -930,8 +930,10 @@ const localeExamples = examples[lang];
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-start;
+			align-items: center;
 			width: 100%;
-			padding: 0 100px;
+			padding: 50px 100px;
+			gap: 150px; /* Force huge separation */
 		}
 		.share-card .result-box {
 			background: rgba(255, 255, 255, 0.05);
@@ -943,6 +945,7 @@ const localeExamples = examples[lang];
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			margin: 0 !important;
 		}
 		.share-card .result-level-text {
 			font-size: 72px;
@@ -1006,11 +1009,12 @@ const localeExamples = examples[lang];
 		.detailed-header {
 			font-size: 48px;
 			color: #3b82f6;
-			margin: 400px 0 60px 0;
+			margin: 0 !important;
 			text-transform: uppercase;
 			letter-spacing: 2px;
 			border-bottom: 2px solid rgba(59, 130, 246, 0.3);
 			padding-bottom: 20px;
+			width: 100%;
 		}
 		.symptom-list {
 			display: flex;
