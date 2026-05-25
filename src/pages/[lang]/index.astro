@@ -60,7 +60,7 @@ const localeQuestions = questions[lang];
 					{index === 5 && (
 						<div class="part-divider">
 							<hr />
-							<span>{t['assessment.partB']}</span>
+							<span>{t['assessment.partB']} <small>({lang === 'fr' ? 'Optionnel' : (lang === 'pt' || lang === 'es' || lang === 'it' ? 'Opcional' : 'Optional')})</small></span>
 						</div>
 					)}
 				</>
@@ -289,11 +289,20 @@ const localeQuestions = questions[lang];
 			left: 50%;
 			transform: translate(-50%, -50%);
 			background: var(--pico-background-color);
-			padding: 0 2rem;
+			padding: 0 1.5rem;
 			font-weight: 800;
 			color: var(--pico-primary);
 			text-transform: uppercase;
-			letter-spacing: 0.2rem;
+			letter-spacing: 0.1rem;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			white-space: nowrap;
+		}
+		.part-divider span small {
+			font-size: 0.7rem;
+			letter-spacing: 0;
+			opacity: 0.7;
 		}
 		.result-scores {
 			display: grid;
