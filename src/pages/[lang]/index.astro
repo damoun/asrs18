@@ -35,6 +35,7 @@ const localeExamples = examples[lang];
 				<span id="progress-text">0/18</span>
 			</div>
 			<progress id="assessment-progress" value="0" max="18"></progress>
+			<button id="clear-progress" class="outline secondary contrast smaller">{t['assessment.clear']}</button>
 		</div>
 		
 		<form id="asrs-form">
@@ -185,6 +186,17 @@ const localeExamples = examples[lang];
 		const progressBar = document.getElementById('assessment-progress');
 		const progressText = document.getElementById('progress-text');
 		const questions = document.querySelectorAll('.question-container');
+		const clearBtn = document.getElementById('clear-progress');
+
+		// Clear Progress
+		clearBtn?.addEventListener('click', () => {
+			if (confirm(t['assessment.clear_confirm'])) {
+				for (let i = 0; i < 18; i++) {
+					localStorage.removeItem(`asrs-${lang}-q${i}`);
+				}
+				window.location.reload();
+			}
+		});
 
 		// Handle dynamic help text and accessibility features
 		form?.addEventListener('change', (e) => {
@@ -360,6 +372,16 @@ const localeExamples = examples[lang];
 			padding: 1rem 0;
 			margin-bottom: 2rem;
 			border-bottom: 1px solid var(--pico-muted-border-color);
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+		#clear-progress {
+			align-self: flex-end;
+			width: auto;
+			padding: 0.25rem 0.75rem;
+			font-size: 0.7rem;
+			margin-bottom: 0;
 		}
 		.progress-header {
 			display: flex;
