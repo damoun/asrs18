@@ -1,0 +1,135 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+	lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+
+const languages = [
+	{ code: 'en', label: 'English' },
+	{ code: 'fr', label: 'Français' },
+	{ code: 'es', label: 'Español' },
+	{ code: 'it', label: 'Italiano' },
+	{ code: 'pt', label: 'Português' },
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+		
+		<!-- Pico.css from Bunny CDN (hopjs) -->
+		<link 
+			rel="stylesheet" 
+			href="https://cdn.hopjs.net/npm/@picocss/pico@2.1.1/css/pico.min.css" 
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer"
+		/>
+		
+		<!-- OpenDyslexic from Bunny CDN (hopjs) -->
+		<link 
+			rel="stylesheet" 
+			href="https://cdn.hopjs.net/npm/open-dyslexic@1.0.3/open-dyslexic-regular.css" 
+			crossorigin="anonymous" 
+			referrerpolicy="no-referrer" 
+			integrity="sha256-eW/rmLkva2bKo6mYz3XfQs6O02B8J5XfSq4Qc7rF8Wo="
+		/>
+
+		<style is:global>
+			:root {
+				--font-family-dyslexic: 'OpenDyslexicRegular', sans-serif;
+			}
+			
+			body.dyslexic,
+			body.dyslexic * {
+				font-family: var(--font-family-dyslexic) !important;
+			}
+
+			/* Custom styles to complement Pico.css */
+			header {
+				padding: 1rem 0;
+				border-bottom: 1px solid var(--pico-muted-border-color);
+				margin-bottom: 2rem;
+			}
+
+			nav ul {
+				justify-content: space-between;
+			}
+
+			.controls {
+				display: flex;
+				gap: 1rem;
+				align-items: center;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="container">
+			<nav>
+				<ul>
+					<li><strong>ASRS-18</strong></li>
+				</ul>
+				<ul>
+					<li>
+						<details class="dropdown">
+							<summary>{languages.find(l => l.code === lang)?.label || 'Language'}</summary>
+							<ul dir="rtl">
+								{languages.map((l) => (
+									<li><a href={`/${l.code}/`}>{l.label}</a></li>
+								))}
+							</ul>
+						</details>
+					</li>
+					<li>
+						<button id="font-toggle" class="outline secondary" size="small">
+							Dyslexic Font
+						</button>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		
+		<main class="container">
+			<slot />
+		</main>
+
+		<footer class="container">
+			<hr />
+			<p>
+				<small>
+					ASRS-18 is a self-report screening tool. It is not a diagnostic tool.
+				</small>
+			</p>
+		</footer>
+
+		<script is:inline>
+			const fontToggle = document.getElementById('font-toggle');
+			const body = document.body;
+
+			// Check for saved preference
+			if (localStorage.getItem('dyslexic-font') === 'true') {
+				body.classList.add('dyslexic');
+				fontToggle?.classList.remove('secondary');
+			}
+
+			fontToggle?.addEventListener('click', () => {
+				const isDyslexic = body.classList.toggle('dyslexic');
+				localStorage.setItem('dyslexic-font', isDyslexic);
+				
+				if (isDyslexic) {
+					fontToggle.classList.remove('secondary');
+				} else {
+					fontToggle.classList.add('secondary');
+				}
+			});
+		</script>
+	</body>
+</html>
