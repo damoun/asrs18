@@ -495,6 +495,7 @@ const localeExamples = examples[lang];
 				const symptomList = document.getElementById('card-symptom-list');
 				
 				if (isDetailed) {
+					card.classList.remove('summary-mode');
 					detailedContent.style.display = 'block';
 					symptomList.innerHTML = '';
 					
@@ -507,16 +508,13 @@ const localeExamples = examples[lang];
 						if (value !== null) {
 							const numericValue = parseInt(value.toString());
 							if (numericValue >= shadedThresholds[i]) {
-								// Get question text from the UI array (available in define:vars questions/localeQuestions context)
-								// Since localeQuestions is not directly in define:vars, let's use the DOM
 								const qText = document.querySelectorAll('.question-text')[i]?.textContent.replace(/^\d+\.\s*/, '').trim();
 								if (qText) frequentQuestions.push(qText);
 							}
 						}
 					}
 
-					// Only show top 8 to avoid overflow if too many
-					frequentQuestions.slice(0, 8).forEach(q => {
+					frequentQuestions.slice(0, 10).forEach(q => {
 						const item = document.createElement('div');
 						item.className = 'symptom-item';
 						item.innerHTML = `
@@ -526,9 +524,10 @@ const localeExamples = examples[lang];
 						symptomList.appendChild(item);
 					});
 
-					card.style.height = 'auto'; // Allow card to expand for details
+					card.style.height = 'auto';
 					card.style.minHeight = '1920px';
 				} else {
+					card.classList.add('summary-mode');
 					detailedContent.style.display = 'none';
 					card.style.height = '1920px';
 				}
@@ -536,8 +535,8 @@ const localeExamples = examples[lang];
 				const canvas = await html2canvas(card, {
 					scale: 1, 
 					useCORS: true,
-					backgroundColor: '#0f172a',
-					windowWidth: 1080, // Force consistent width for capture
+					backgroundColor: isDetailed ? '#ffffff' : '#0f172a',
+					windowWidth: 1080,
 				});
 
 				const image = canvas.toDataURL('image/png');
@@ -882,17 +881,21 @@ const localeExamples = examples[lang];
 		.share-card {
 			width: 1080px;
 			height: 1920px;
-			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-			color: white;
+			background: #ffffff;
+			color: #1e293b;
 			display: flex;
 			flex-direction: column;
 			padding: 0;
-			font-family: system-ui, -apple-system, sans-serif;
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		}
+		.share-card.summary-mode {
+			background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+			color: white;
 		}
 		.share-card .card-header {
 			text-align: center;
 			margin-top: 150px;
-			margin-bottom: 120px;
+			margin-bottom: 80px;
 			width: 100%;
 			display: flex;
 			flex-direction: column;
@@ -909,20 +912,18 @@ const localeExamples = examples[lang];
 			color: white;
 		}
 		.share-card .card-title {
-			font-size: 190px;
-			color: white;
+			font-size: 160px;
+			margin-top: 40px;
+			margin-bottom: 10px;
+			color: inherit;
 			line-height: 1;
 			font-weight: 900;
 			text-align: center;
 			width: 100%;
-			display: block;
-			margin: 50px 0 30px 0;
-			padding: 0;
-			letter-spacing: -5px;
 		}
 		.share-card .card-subtitle {
 			font-size: 56px;
-			opacity: 0.8;
+			opacity: 0.7;
 			text-align: center;
 		}
 		.share-card .card-body {
@@ -933,114 +934,125 @@ const localeExamples = examples[lang];
 			align-items: center;
 			width: 100%;
 			padding: 50px 100px;
-			gap: 150px; /* Force huge separation */
 		}
 		.share-card .result-box {
-			background: rgba(255, 255, 255, 0.05);
-			border: 4px solid #3b82f6;
-			border-radius: 40px;
+			background: #f8fafc;
+			border: 8px solid #3b82f6;
+			border-radius: 60px;
 			padding: 80px;
 			text-align: center;
 			width: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin: 0 !important;
+			margin-bottom: 80px;
+		}
+		.summary-mode .result-box {
+			background: rgba(255, 255, 255, 0.05);
 		}
 		.share-card .result-level-text {
-			font-size: 72px;
-			color: #3b82f6;
+			font-size: 84px;
+			color: #2563eb;
 			margin-bottom: 60px;
-			line-height: 1.2;
-			font-weight: 800;
+			line-height: 1.1;
+			font-weight: 900;
 			text-align: center;
+		}
+		.summary-mode .result-level-text {
+			color: #60a5fa;
 		}
 		.share-card .card-scores {
 			display: flex;
 			flex-direction: column;
-			gap: 40px;
+			gap: 30px;
 			width: 100%;
 		}
 		.share-card .card-score-item {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+			padding-bottom: 15px;
+		}
+		.summary-mode .card-score-item {
 			border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-			padding-bottom: 20px;
 		}
 		.share-card .label {
-			font-size: 40px;
+			font-size: 44px;
+			font-weight: 600;
 			opacity: 0.8;
 		}
 		.share-card .value {
 			font-size: 64px;
-			font-weight: 800;
+			font-weight: 900;
+			color: #3b82f6;
 		}
 		.share-card .card-disclaimer {
-			margin-top: 80px;
-			font-size: 28px;
-			opacity: 0.5;
+			margin-top: auto;
+			margin-bottom: 50px;
+			font-size: 32px;
+			opacity: 0.6;
 			text-align: center;
 			font-style: italic;
 			line-height: 1.4;
 		}
 		.share-card .card-footer {
 			text-align: center;
-			padding-bottom: 150px;
+			padding-bottom: 120px;
 			width: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
+			border-top: 4px solid #f1f5f9;
+			padding-top: 60px;
+		}
+		.summary-mode .card-footer {
+			border-top: none;
 		}
 		.share-card .footer-note {
 			font-size: 36px;
 			opacity: 0.6;
 			margin-bottom: 15px;
-			text-align: center;
 		}
 		.share-card .footer-domain {
-			font-size: 64px;
+			font-size: 72px;
 			color: #3b82f6;
-			font-weight: 800;
-			text-align: center;
+			font-weight: 900;
 		}
 
 		/* Detailed Report Specifics */
 		.detailed-header {
-			font-size: 48px;
-			color: #3b82f6;
-			margin: 0 !important;
+			font-size: 52px;
+			color: #1e293b;
+			margin: 40px 0 40px 0;
 			text-transform: uppercase;
-			letter-spacing: 2px;
-			border-bottom: 2px solid rgba(59, 130, 246, 0.3);
-			padding-bottom: 20px;
+			letter-spacing: 4px;
+			font-weight: 900;
 			width: 100%;
+			text-align: left;
+			border-left: 15px solid #3b82f6;
+			padding-left: 30px;
 		}
 		.symptom-list {
 			display: flex;
 			flex-direction: column;
-			gap: 15px; /* Tighter list */
-			margin-bottom: 60px;
+			gap: 25px;
 			width: 100%;
 			padding: 0;
-			text-align: left;
 		}
 		.symptom-item {
 			display: flex;
 			gap: 30px;
-			align-items: flex-start;
+			align-items: center;
+			background: #f1f5f9;
+			padding: 30px 40px;
+			border-radius: 25px;
 		}
 		.symptom-bullet {
 			color: #3b82f6;
 			font-weight: 900;
-			font-size: 48px;
+			font-size: 60px;
 			line-height: 1;
-			margin-top: -5px;
 		}
 		.symptom-text {
-			font-size: 36px;
-			line-height: 1.4;
-			color: rgba(255, 255, 255, 0.9);
+			font-size: 38px;
+			line-height: 1.3;
+			color: #334155;
+			font-weight: 600;
 			flex: 1;
 		}
 
