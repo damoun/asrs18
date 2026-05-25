@@ -34,14 +34,14 @@ const localeExamples = examples[lang];
 				<span>{t['results.partA.title']}</span>
 				<span id="progress-text-A">0/6</span>
 			</div>
-			<progress id="assessment-progress-A" value="0" max="6"></progress>
+			<progress id="assessment-progress-A" value="0" max="6" aria-label={t['results.partA.title']}></progress>
 			
 			<div id="progress-container-B" style="display: none; margin-top: 0.5rem;">
 				<div class="progress-header">
 					<span>{t['results.partB.title']}</span>
 					<span id="progress-text-B">0/12</span>
 				</div>
-				<progress id="assessment-progress-B" value="0" max="12" class="secondary"></progress>
+				<progress id="assessment-progress-B" value="0" max="12" class="secondary" aria-label={t['results.partB.title']}></progress>
 			</div>
 
 			<button id="clear-progress" class="outline secondary contrast smaller">{t['assessment.clear']}</button>

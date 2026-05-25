@@ -29,6 +29,43 @@ const languages = [
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 		
+		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+
+		{/* i18n alternates */}
+		{languages.map((l) => (
+			<link rel="alternate" hreflang={l.code} href={new URL(`/${l.code}/`, Astro.site)} />
+		))}
+		<link rel="alternate" hreflang="x-default" href={new URL('/en/', Astro.site)} />
+
+		{/* Open Graph / Facebook */}
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.url} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL('/favicon.svg', Astro.site)} />
+
+		{/* Twitter */}
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={new URL('/favicon.svg', Astro.site)} />
+
+		<script type="application/ld+json" is:inline set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "WebApplication",
+			"name": title,
+			"description": description,
+			"url": Astro.site,
+			"applicationCategory": "HealthApplication",
+			"operatingSystem": "Web",
+			"about": {
+				"@type": "Thing",
+				"name": "Adult ADHD Self-Report Scale (ASRS)",
+				"description": "A screening tool for adult ADHD."
+			}
+		})} />
+		
 		<!-- Pico.css from Bunny CDN (hopjs) -->
 		<link 
 			rel="stylesheet" 
@@ -92,7 +129,7 @@ const languages = [
 						</details>
 					</li>
 					<li>
-						<button id="font-toggle" class="outline secondary" size="small">
+						<button id="font-toggle" class="outline secondary" size="small" aria-label={t['nav.dyslexic']} aria-pressed="false">
 							{t['nav.dyslexic']}
 						</button>
 					</li>
@@ -128,11 +165,13 @@ const languages = [
 			if (localStorage.getItem('dyslexic-font') === 'true') {
 				body.classList.add('dyslexic');
 				fontToggle?.classList.remove('secondary');
+				fontToggle?.setAttribute('aria-pressed', 'true');
 			}
 
 			fontToggle?.addEventListener('click', () => {
 				const isDyslexic = body.classList.toggle('dyslexic');
 				localStorage.setItem('dyslexic-font', isDyslexic);
+				fontToggle.setAttribute('aria-pressed', isDyslexic ? 'true' : 'false');
 				
 				if (isDyslexic) {
 					fontToggle.classList.remove('secondary');
