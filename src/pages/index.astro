@@ -1,20 +1,21 @@
 ---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0;url=/en/" />
-    <script is:inline>
+    <meta http-equiv="refresh" content={`0;url=${baseUrl}/en/`} />
+    <script is:inline define:vars={{ baseUrl }}>
       const lang = navigator.language.split('-')[0];
       const supported = ['en', 'fr', 'es', 'it', 'pt'];
       if (supported.includes(lang)) {
-        window.location.href = `/${lang}/`;
+        window.location.href = `${baseUrl}/${lang}/`;
       } else {
-        window.location.href = '/en/';
+        window.location.href = `${baseUrl}/en/`;
       }
     </script>
   </head>
   <body>
-    <p>Redirecting to <a href="/en/">/en/</a>...</p>
+    <p>Redirecting to <a href={`${baseUrl}/en/`}>{baseUrl}/en/</a>...</p>
   </body>
 </html>
