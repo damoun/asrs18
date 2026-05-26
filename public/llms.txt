@@ -1,0 +1,22 @@
+# ASRS-18 ADHD Self-Report Scale
+
+Adult ADHD Self-Report Scale (ASRS v1.1) is a reliable screening tool to help identify symptoms of Attention Deficit Hyperactivity Disorder in adults.
+
+## Purpose
+
+The Adult ADHD Self-Report Scale (ASRS-v1.1) symptom checklist was developed in conjunction with the World Health Organization (WHO), and the Workgroup on Adult ADHD.
+
+## Features
+
+- **Clinically Validated:** Full 18-question checklist with weighted scoring.
+- **Multilingual Support:** Localized in English, French, Spanish, Italian, and Portuguese.
+- **Privacy First:** 100% client-side processing; no data is sent to servers.
+- **Clinical Export:** Professional A4 PDF reports for medical practitioners.
+- **Accessibility:** OpenDyslexic font support and focus-mode navigation.
+
+## Technical Details
+
+- **Framework:** Astro 6
+- **Styling:** Pico.css
+- **Local Storage:** Progress persistence for anonymous users.
+- **Deployment:** GitHub Pages
