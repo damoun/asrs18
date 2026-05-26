@@ -1,7 +1,8 @@
 export const ui = {
   en: {
-    'site.title': 'ASRS-18 ADHD Self-Report',
-    'site.description': 'Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist',
+    'site.title': 'ASRS-18 Adult ADHD Self-Report Scale | Free Online Screening Test',
+    'site.description': 'Take the official Adult ADHD Self-Report Scale (ASRS-v1.1) symptom checklist. A free, private, and reliable online screening test for Attention Deficit Hyperactivity Disorder in adults.',
+    'site.intro': 'The Adult ADHD Self-Report Scale (ASRS-v1.1) is a clinically validated screening tool developed in conjunction with the World Health Organization (WHO). It is designed to help identify symptoms of Attention Deficit Hyperactivity Disorder (ADHD) in adults by evaluating behaviors over the past 6 months. This free online assessment provides immediate scoring and a detailed clinical report to assist you and your healthcare professional in further evaluation.',
     'assessment.start': 'Start Assessment',
     'assessment.partA': 'Part A: Core Screening',
     'assessment.partB': 'Part B: Symptom Checklist',
@@ -51,8 +52,9 @@ export const ui = {
     'report.subtitle': 'Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist',
   },
   fr: {
-    'site.title': 'Auto-évaluation ASRS-18 TDAH',
-    'site.description': 'Échelle d\'auto-évaluation du TDAH chez l\'adulte (ASRS-v1.1)',
+    'site.title': 'Échelle d\'auto-évaluation du TDAH chez l\'adulte ASRS-18 | Test de dépistage gratuit',
+    'site.description': 'Répondez au questionnaire officiel de l\'échelle d\'auto-évaluation du TDAH chez l\'adulte (ASRS-v1.1). Un test de dépistage en ligne gratuit, privé et fiable pour le trouble du déficit de l\'attention avec ou sans hyperactivité.',
+    'site.intro': 'L\'échelle d\'auto-évaluation du TDAH chez l\'adulte (ASRS-v1.1) est un outil de dépistage validé cliniquement, développé en collaboration avec l\'Organisation mondiale de la Santé (OMS). Il est conçu pour aider à identifier les symptômes du trouble du déficit de l\'attention avec ou sans hyperactivité (TDAH) chez l\'adulte en évaluant les comportements au cours des 6 derniers mois. Cette évaluation en ligne gratuite fournit un score immédiat et un rapport clinique détaillé pour vous aider, vous et votre professionnel de la santé, dans une évaluation ultérieure.',
     'assessment.start': 'Commencer l\'évaluation',
     'assessment.partA': 'Partie A : Dépistage principal',
     'assessment.partB': 'Partie B : Liste complète des symptômes',
@@ -102,8 +104,9 @@ export const ui = {
     'report.subtitle': 'Échelle d\'auto-évaluation du TDAH chez l\'adulte (ASRS-v1.1)',
   },
   es: {
-    'site.title': 'Autoinforme ASRS-18 TDAH',
-    'site.description': 'Escala de Autoinforme de TDAH para Adultos (ASRS-v1.1)',
+    'site.title': 'Escala de Autoinforme de TDAH para Adultos ASRS-18 | Test de detección gratuito',
+    'site.description': 'Realice el cuestionario oficial de la Escala de Autoinforme de TDAH para Adultos (ASRS-v1.1). Un test de detección en línea gratuito, privado y confiable para el Trastorno por Déficit de Atención e Hiperactividad.',
+    'site.intro': 'La Escala de Autoinforme de TDAH para Adultos (ASRS-v1.1) es una herramienta de detección validada clínicamente, desarrollada en colaboración con la Organización Mundial de la Salud (OMS). Está diseñada para ayudar a identificar síntomas del Trastorno por Déficit de Atención e Hiperactividad (TDAH) en adultos mediante la evaluación de comportamientos durante los últimos 6 meses. Esta evaluación en línea gratuita proporciona una puntuación inmediata y un informe clínico detallado para ayudarlo a usted y a su profesional de la salud en una evaluación posterior.',
     'assessment.start': 'Iniciar evaluación',
     'assessment.partA': 'Parte A: Detección principal',
     'assessment.partB': 'Parte B: Lista completa de síntomas',
@@ -153,8 +156,9 @@ export const ui = {
     'report.subtitle': 'Escala de Autoinforme de TDAH para Adultos (ASRS-v1.1)',
   },
   it: {
-    'site.title': 'Autovalutazione ASRS-18 ADHD',
-    'site.description': 'Scala di autovalutazione ADHD per adulti (ASRS-v1.1)',
+    'site.title': 'Scala di autovalutazione ADHD per adulti ASRS-18 | Test di screening online gratuito',
+    'site.description': 'Compila il questionario ufficiale della scala di autovalutazione ADHD per adulti (ASRS-v1.1). Un test di screening online gratuito, privato e affidabile per il disturbo da deficit di attenzione e iperattività.',
+    'site.intro': 'La scala di autovalutazione ADHD per adulti (ASRS-v1.1) è uno strumento di screening validato clinicamente, sviluppato in collaborazione con l\'Organizzazione Mondiale della Sanità (OMS). È progettato per aiutare a identificare i sintomi del disturbo da deficit di attenzione e iperattività (ADHD) negli adulti valutando i comportamenti negli ultimi 6 mesi. Questa valutazione online gratuita fornisce un punteggio immediato e un rapporto clinico dettagliato per assistere te e il tuo professionista sanitario in una valutazione successiva.',
     'assessment.start': 'Inizia valutazione',
     'assessment.partA': 'Parte A: Screening principale',
     'assessment.partB': 'Parte B: Elenco completo dei sintomi',
@@ -204,8 +208,9 @@ export const ui = {
     'report.subtitle': 'Scala di autovalutazione ADHD per adulti (ASRS-v1.1)',
   },
   pt: {
-    'site.title': 'Auto-relato ASRS-18 TDAH',
-    'site.description': 'Escala de Auto-relato de TDAH em Adultos (ASRS-v1.1)',
+    'site.title': 'Escala de Auto-relato de TDAH em Adultos ASRS-18 | Teste de rastreio online gratuito',
+    'site.description': 'Responda ao questionário oficial da Escala de Auto-relato de TDAH em Adultos (ASRS-v1.1). Um teste de rastreio online gratuito, privado e fiável para o Transtorno de Défice de Atenção e Hiperatividade.',
+    'site.intro': 'A Escala de Auto-relato de TDAH em Adultos (ASRS-v1.1) é uma ferramenta de rastreio validada clinicamente, desenvolvida em conjunto com a Organização Mundial da Saúde (OMS). Foi concebida para ajudar a identificar sintomas de Transtorno de Défice de Atenção e Hiperatividade (TDAH) em adultos, avaliando comportamentos nos últimos 6 meses. Esta avaliação online gratuita fornece uma pontuação imediata e um relatório clínico detalhado para o ajudar a si e ao seu profissional de saúde numa avaliação posterior.',
     'assessment.start': 'Iniciar avaliação',
     'assessment.partA': 'Parte A: Rastreio Principal',
     'assessment.partB': 'Parte B: Lista Completa de Sintomas',
@@ -355,7 +360,7 @@ export const examples = {
     "sentir uma sensação interna de inquietação, mesmo que esteja sentado e parado.",
     "ter dificuldade em manter-se calmo ou tranquilo durante uma atividade de lazer.",
     "dominar conversas ou ter dificuldade em parar de falar, mesmo quando os outros estão aborrecidos.",
-    "terminar as frases de outras pessoas ou soltar respostas antes de a pergunta ser terminada.",
+    "terminar as frases de outras personas ou soltar respostas antes de a pergunta ser terminada.",
     "sentir uma frustración intensa enquanto espera na fila do supermercado ou no trânsito.",
     "intrometer-se em jogos ou conversas de outras personas sem ser convidado."
   ]
@@ -449,8 +454,8 @@ export const questions = {
     "Quando tem uma tarefa que requer muito pensamento, com que frequência evita ou adia o início?",
     "Com que frequência mexe as mãos ou os pés ou se contorce na cadeira quando tem de estar sentado durante muito tempo?",
     "Com que frequência se sente excessivamente activo e impelido a fazer coisas, como se estivesse movido por un motor?",
-    "Com que frequência comete erros por descuido quando tem de trabalhar num projeto aborrecido ou difícil?",
-    "Com que frequência tem dificuldade em manter a atenção quando está a trabalhar em algo aborrecido ou repetitivo?",
+    "Com que frequência comete erros por descuido quando tem de trabalhar num projeto aborrecido ou difficile?",
+    "Com que frequência tem dificuldade em manter a attenzione quando está a trabalhar em algo aborrecido ou repetitivo?",
     "Com que frequência tem dificuldade em concentrar-se no que as people lhe dizem, mesmo quando estão a fare direttamente consigo?",
     "Com que frequência perde ou tem dificuldade em encontrar coisas em casa ou no trabalho?",
     "Com que frequência se distrai con atividades ou ruídos ao seu redor?",

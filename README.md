@@ -27,8 +27,6 @@ A professional, high-performance, and privacy-first static website for the Adult
 
 ## Getting Started
 
-### Local Development
-
 1. **Clone the repo:**
    ```bash
    git clone https://github.com/damoun/asrs18.git
