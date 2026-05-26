@@ -6,7 +6,6 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://asrs18.com',
-  base: '/asrs18',
   output: 'static',
 
   i18n: {

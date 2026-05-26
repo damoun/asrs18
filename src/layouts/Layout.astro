@@ -17,8 +17,6 @@ const languages = [
 	{ code: 'it', label: 'Italiano' },
 	{ code: 'pt', label: 'Português' },
 ];
-
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <!doctype html>
@@ -34,13 +32,13 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 		{description && <meta name="description" content={description} />}
 		
 		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-		<link rel="sitemap" href={`${baseUrl}/sitemap-index.xml`} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
 
 		{/* i18n alternates */}
 		{languages.map((l) => (
-			<link rel="alternate" hreflang={l.code} href={new URL(`${baseUrl}/${l.code}/`, Astro.site)} />
+			<link rel="alternate" hreflang={l.code} href={new URL(`/${l.code}/`, Astro.site)} />
 		))}
-		<link rel="alternate" hreflang="x-default" href={new URL(`${baseUrl}/en/`, Astro.site)} />
+		<link rel="alternate" hreflang="x-default" href={new URL('/en/', Astro.site)} />
 
 		{/* Open Graph / Facebook */}
 		<meta property="og:type" content="website" />
@@ -135,7 +133,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 							<summary>{languages.find(l => l.code === lang)?.label || t['nav.language']}</summary>
 							<ul dir="rtl">
 								{languages.map((l) => (
-									<li><a href={`${baseUrl}/${l.code}/`}>{l.label}</a></li>
+									<li><a href={`/${l.code}/`}>{l.label}</a></li>
 								))}
 							</ul>
 						</details>
@@ -164,7 +162,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
 				<small>
 					{t['privacy.notice']}
 					<br />
-					<a href={`${baseUrl}/${lang}/privacy/`}>{t['privacy.link']}</a>
+					<a href={`/${lang}/privacy/`}>{t['privacy.link']}</a>
 				</small>
 			</p>
 		</footer>
